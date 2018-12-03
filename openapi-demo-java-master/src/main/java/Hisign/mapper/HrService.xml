@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Hisign.dao.HrDao">
+	<select id="insert" resultType="Hisign.entity.HrContractInfor" parameterType="Hisign.entity.HrContractInfor">
+	insert into hr_contract
+	(dcnumber,userId,borrowid,borrowname,borrowde,contractName,reason,abacktime,audit_name,spid)
+	values
+	(#{dcnumber},#{userId},#{borrowid},#{borrowname},#{borrowde},#{contractName},#{reason},#{abacktime},#{audit_name},#{spid});
+	</select>
+	
+	<select id="AuditToDataBase" resultType="Hisign.entity.HrContractInfor" parameterType="Hisign.entity.HrContractInfor">
+	update hr_contract set spopinions=#{spopinions}, spdate=#{spdate} ,abdate=#{abdate} , audittype=#{audittype} where dcnumber=#{dcnumber}
+	</select>
+	
+	<select id="ApplyToDataBase" resultType="Hisign.entity.HrContractInfor" parameterType="Hisign.entity.HrContractInfor">
+	update hr_contract set evaluation=#{evaluation},note=#{note} where dcnumber=#{dcnumber}
+	</select>
+	
+	<select id="BackToDateBase" resultType="Hisign.entity.HrContractInfor" parameterType="Hisign.entity.HrContractInfor">
+	update hr_contract set rdate=now() where dcnumber=#{dcnumber}
+	</select>
+	
+	<select id="FinalToDateBase" resultType="Hisign.entity.HrContractInfor" parameterType="Hisign.entity.HrContractInfor">
+	update hr_contract set overdate=now() where dcnumber=#{dcnumber}
+	</select>
+	
+	<select id="searchNeedBack" resultType="Hisign.entity.HrContractInfor" parameterType="java.lang.String">
+	select * from hr_contract where userId=#{userid} order by dcnumber desc
+	</select>
+	
+	<select id="searchInfor" resultType="Hisign.entity.HrContractInfor" parameterType="java.lang.String">
+	select * from hr_contract where borrowname=#{searchkey} or abdate=#{searchkey} order by dcnumber desc
+	
+	</select>
+</mapper>

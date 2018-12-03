@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Hisign.dao.RepairDao">
+
+	<select id="Insert" resultType="Hisign.entity.RepairInfor" parameterType= "java.lang.String">
+     insert into Repair (dctid,repair_people,repair_jobnum,people_depart,repair_location,repair_content,repair_time,repair_repairer) values(#{dctid},#{repair_people},#{repair_jobnum},#{people_depart},#{repair_location},#{repair_content},#{repair_time},#{repair_repairer});	</select>
+	<select id="Recive" resultType="Hisign.entity.RepairInfor" parameterType= "java.lang.String">
+		select * from Repair where repair_evaluation is null;
+	</select>
+	<select id="Submitin" resultType="Hisign.entity.RepairInfor" parameterType= "Hisign.entity.RepairInfor">
+		update Repair set process_jobnum=#{process_jobnum},process_people=#{process_people},process_depart=#{process_depart},process_donetime=#{process_donetime} where dctid=#{dctid};
+	</select>
+	<select id="repairing" resultType="Hisign.entity.RepairInfor" parameterType= "java.lang.String">
+		select * from Repair where repair_people=#{searchname};
+	</select>
+	<select id="toEvaluation" resultType="Hisign.entity.RepairInfor" parameterType= "Hisign.entity.RepairInfor">
+		update Repair set repair_evaluation=#{repair_evaluation},end_time=#{end_time} where dctid=#{dctid};
+	</select>
+	<select id="Myrepairhis" resultType="Hisign.entity.RepairInfor" parameterType= "java.lang.String">
+		select * from Repair where process_people=#{searchname};
+	</select>
+	<select id="SearchRepaired" resultType="Hisign.entity.RepairInfor" parameterType= "java.lang.String">
+		select * from Repair where repair_people=#{searchname} or search_time=#{searchname};
+	</select>
+	<select id="nametime" resultType="Hisign.entity.RepairInfor" parameterType= "Hisign.entity.RepairInfor">
+		select * from Repair where repair_time like #{repair_time}% and repair_people=#{repair_people};
+	</select>
+	<select id="namedate" resultType="Hisign.entity.RepairInfor" parameterType= "Hisign.entity.RepairInfor">
+		select * from Repair where repair_people=#{repair_people} and repair_time between #{repair_time} and #{repair_time2};
+	</select>
+	<select id="fortime" resultType="Hisign.entity.RepairInfor" parameterType= "java.lang.String">
+		select * from Repair where repair_time like #{time}%;
+	</select>
+	<select id="fordate" resultType="Hisign.entity.RepairInfor" parameterType= "Hisign.entity.RepairInfor">
+		select * from Repair where repair_time between #{repair_time} and #{repair_time2};
+	</select>
+<!-- process_depart（处理人部门）=(#{searchname}) -->
+</mapper>

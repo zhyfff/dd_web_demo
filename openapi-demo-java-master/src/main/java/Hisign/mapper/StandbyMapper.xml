@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Hisign.dao.StandbyDAO">
+
+	<select id="search" resultType="Hisign.entity.StandbyInfor" parameterType= "java.lang.String">
+		select * from standby where test_time=(#{selectdate});
+	</select>
+	
+	<select id="Insert" parameterType="Hisign.entity.StandbyInfor">
+
+		insert into standby (dctid,job_number,standby_people,standby_department,standby_firstdate,process_time,process_jobnum,process_people,complete_time,standby_note,evaluation,test_time) values(#{dctid},#{job_number},#{standby_people},#{standby_department},#{standby_firstdate},#{process_time},#{process_jobnum},#{process_people},#{complete_time},#{standby_note},#{evaluation},#{test_time});
+	</select>	
+	<select id="searchmysp" resultType="Hisign.entity.StandbyInfor" parameterType = "java.lang.String">
+		select * from standby where process_people=#{selectdate} and donetime is null and process_result != "Failed" or process_result is null;
+	
+	</select>	
+		<select id="toresult" resultType="Hisign.entity.StandbyInfor" parameterType = "Hisign.entity.ContractInfor">
+		update standby set complete_time=#{complete_time},process_time=#{process_time},process_result=#{process_result} where dctid=#{dctid};
+	</select>
+	<select id="searchsphis" resultType="Hisign.entity.StandbyInfor" parameterType = "java.lang.String">
+		select * from standby where process_people=#{searchname} and process_result is not null;
+	
+	</select>
+	<select id="searchmyapling" resultType="Hisign.entity.StandbyInfor" parameterType = "java.lang.String">
+             select * from standby where standby_people=#{searchname} and evaluation is null;	
+	</select>
+	<select id="toeva" resultType="Hisign.entity.StandbyInfor" parameterType = "java.lang.String">
+             update standby set evaluation=#{evaluation} where dctid=#{dctid};
+	</select>
+	<select id="todone" resultType="Hisign.entity.StandbyInfor" parameterType = "Hisign.entity.StandbyInfor">
+             update standby set donetime=#{donetime} where dctid=#{dctid};
+	</select>	
+	<select id="searchaplhis" resultType="Hisign.entity.StandbyInfor" parameterType = "java.lang.String">
+             select * from standby where standby_people=#{searchname} and evaluation is not null;	
+	</select>						
+</mapper>

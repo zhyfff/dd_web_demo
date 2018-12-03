@@ -1,0 +1,776 @@
+package Hisign.controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
+import Hisign.dao.ContractDao;
+import Hisign.entity.ContractInfor;
+import Hisign.entity.DepartmentDe;
+import Hisign.entity.UserInfor;
+
+
+/**
+ * 
+ * 合同借用
+ * @author Administrator
+ *
+ */
+@Controller("addContractcontroller")
+//@RequestMapping(value="/Contract")
+public class AddNewController  {
+	final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	/**
+	 * 新增合同借用
+	 * @param ContractInfor
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/Contract/AddNew")
+//	@ResponseBody
+	public void applyLink(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		logger.info("----------/Contract/AddNew");
+		String dcnumber=String.valueOf(System.currentTimeMillis());
+		String borrowid=request.getParameter("borrowid");
+		String borrowname=request.getParameter("borrowname");
+		String borrowde=request.getParameter("borrowde");
+		String link_contractName=request.getParameter("link_contractName");
+		String link_reason=request.getParameter("link_reason");
+		String link_abacktime=request.getParameter("link_abacktime");
+		String link_spid = request.getParameter("userid");
+		String link_spname=request.getParameter("audit-name");
+		String link_spopinions=request.getParameter("link_spopinions");
+		String link_spdate=request.getParameter("link_spdate");
+		String link_abdate=request.getParameter("link_abdate");
+		String link_rdate=request.getParameter("link_rdate");
+		String link_note=request.getParameter("link_note");
+		String link_evaluation=request.getParameter("link_evaluation");
+	
+	    ContractInfor contract =new ContractInfor();
+	    contract.setDcnumber(dcnumber);
+	    contract.setBorrowid(borrowid);
+	    contract.setBorrowname(borrowname);
+	    contract.setBorrowde(borrowde);
+	    contract.setLink_contractName(link_contractName);
+	    contract.setLink_reason(link_reason);
+	    contract.setLink_abacktime(link_abacktime);
+	    contract.setLink_spid(link_spid);
+	    contract.setLink_spname(link_spname);
+	    contract.setLink_spopinions(link_spopinions);
+	    contract.setLink_spdate(link_spdate);
+	    contract.setLink_abdate(link_abdate);
+	    contract.setLink_rdate(link_rdate);
+	    contract.setLink_note(link_note);
+	    contract.setLink_evaluation(link_evaluation);
+	    
+	    ApplicationContext ctx=new ClassPathXmlApplicationContext("spring-mybatis.xml");
+        //获得bean
+	    ContractDao contractDao = ctx.getBean(ContractDao.class);
+	    try {
+	    	 contractDao.Insert(contract);
+		} catch (Exception e1) {
+			try {			
+				PrintWriter out = response.getWriter();
+				out = response.getWriter();
+				out.print("失败");
+				out.flush();
+				out.close();
+//				response.getWriter().append("成功");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		try {			
+			PrintWriter out = response.getWriter();
+			out = response.getWriter();
+			out.print("成功");
+			out.flush();
+			out.close();
+//			response.getWriter().append("成功");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
+	
+	/**
+	 * 跳转到合同借阅选项
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/Contract/tocontract",method = RequestMethod.GET)
+	public ModelAndView tocontract(HttpServletRequest request){
+		ModelAndView mav = new ModelAndView();
+		String userjson = request.getParameter("info");
+		if (userjson.equals("undefined")){
+			mav.setViewName("/dingdingweb/HUI/err");
+		}else {
+			JSONObject js = JSONObject.parseObject(userjson);
+			UserInfor usi = new UserInfor();
+			usi.setAvatar(js.getString("avatar"));
+			usi.setName(js.getString("name"));
+			usi.setUserid(js.getString("userid"));
+			usi.setDepartment(js.getString("department"));
+			List<UserInfor> userinfoList = new ArrayList<>();
+			userinfoList.add(usi);
+			mav.addObject("userinfoList", userinfoList);
+			mav.addObject("userjson", userjson.replaceAll("\"", "'"));
+			mav.setViewName("/dingdingweb/HUI/contract/contract");
+		}
+		
+		return mav;
+	}
+	
+	/**
+	 * 
+	 * 跳转到新增新的合同借阅
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/Contract/tonewadd",method = RequestMethod.GET)
+	public ModelAndView tonewadd(HttpServletRequest request){
+//		String userjson = request.getParameter("info");
+		ModelAndView mav = new ModelAndView();
+//		if (userjson.equals("undefined")){
+//			mav.setViewName("/dingdingweb/HUI/err");
+//		}else {
+//			JSONObject js = JSONObject.parseObject(userjson.replaceAll("'", "\""));
+////			System.out.println("tonewadd"+userjson);
+//			UserInfor usi = new UserInfor();
+//			usi.setAvatar(js.getString("avatar"));
+//			usi.setName(js.getString("name"));
+//			usi.setUserid(js.getString("userid"));
+//			usi.setJobnumber(js.getString("jobnumber"));
+//			JSONArray depart = js.getJSONArray("department");
+//			List<DepartmentDe> departList = new ArrayList<>();
+//			DepartmentDe dpd = new DepartmentDe();	
+//			for (int i = 0; i < depart.size(); i++) {		
+//				if (i==0) {
+//					String fid = depart.getString(0);
+//					 dpd.setFid(fid);
+//				}else if(i==1){
+//					String zid = depart.getString(1);
+//					dpd.setZid(zid);
+//				}
+//			}
+//			departList.add(dpd);
+//			List<UserInfor> userinfoList = new ArrayList<>();
+//			userinfoList.add(usi);
+//			mav.addObject("userinfoList", userinfoList);
+//			mav.addObject("userjson", userjson.replaceAll("\"", "'"));
+//			mav.addObject("departList", departList);
+			mav.setViewName("redirect:/dingdingweb/HUI/contract/newadd.jsp");
+//		}
+		
+		return mav;
+	}
+	
+	/**
+	 * 跳转到查询合同借阅
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/Contract/tonewselect",method = RequestMethod.GET)
+	public ModelAndView tonewselect(HttpServletRequest request){
+		ModelAndView mav = new ModelAndView();
+		String userjson = request.getParameter("info");
+		if (userjson.equals("undefined")){
+			mav.setViewName("/dingdingweb/HUI/err");
+		}else {
+			JSONObject js = JSONObject.parseObject(userjson.replaceAll("'", "\""));
+	//		System.out.println("tonewselect"+userjson);
+			UserInfor usi = new UserInfor();
+			usi.setAvatar(js.getString("avatar"));
+			usi.setName(js.getString("name"));
+			usi.setUserid(js.getString("userid"));
+			usi.setDepartment(js.getString("department"));
+			List<UserInfor> userinfoList = new ArrayList<>();
+			userinfoList.add(usi);
+			mav.addObject("userinfoList", userinfoList);
+			mav.addObject("userjson", userjson.replaceAll("\"", "'"));
+			mav.setViewName("/dingdingweb/HUI/contract/newselect");
+		}
+		return mav;
+	}
+	
+	
+	/**
+	 * 
+	 * 跳转到我的审批
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="/Contract/tomyaudit")
+	public ModelAndView tomyaudit(HttpServletRequest request){	
+		String userjson = request.getParameter("info");
+		ModelAndView mav = new ModelAndView();
+		if (userjson.equals("undefined")){
+			mav.setViewName("/dingdingweb/HUI/err");
+		}else {
+			JSONObject js = JSONObject.parseObject(userjson.replaceAll("'", "\""));
+			System.out.println("tonewselect"+userjson);
+			UserInfor usi = new UserInfor();
+			usi.setAvatar(js.getString("avatar"));
+			usi.setName(js.getString("name"));
+			usi.setUserid(js.getString("userid"));
+			usi.setDepartment(js.getString("department"));
+			List<UserInfor> userinfoList = new ArrayList<>();
+			userinfoList.add(usi);
+			String searchname= js.getString("name");
+	//		System.out.println("searchname:"+searchname);
+			if (searchname.equals("")) {
+				System.out.println("呵呵");
+			}else {
+				List<ContractInfor> contractlist = selectContracter(searchname);
+				mav.addObject("contractlist", contractlist);// 传入集合
+				mav.addObject("userinfoList", userinfoList);
+				mav.addObject("userjson", userjson.replaceAll("\"", "'"));
+				mav.setViewName("/dingdingweb/HUI/contract/myaudit");
+			}
+		}
+		return mav;
+	}
+	
+	/**
+	 * 获取需要我审批的合同申请数据
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("/Contract/getMyAudit")
+	public void getMyAuditController(HttpServletRequest request,HttpServletResponse response){
+		String audit_name = request.getParameter("audit_name").replace("欢迎您 : ", "");
+		String pageNum = request.getParameter("pageNum");
+		PageHelper.startPage(Integer.parseInt(pageNum), 12);
+		List<ContractInfor> bList = selectContracter(audit_name);
+		PageInfo<ContractInfor> pageInfo = new PageInfo<ContractInfor>(bList);
+		JSONObject re = new JSONObject();
+		re.put("blist", pageInfo.getList());
+		re.put("pageInfo", pageInfo);
+		try {			
+			PrintWriter out = response.getWriter();
+			out = response.getWriter();
+			out.print(re);
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+	 * 审批完成（同意或拒绝）保存到数据库
+	 * @param request
+	 */
+	@RequestMapping(value="/Contract/auditToBase")
+	public ModelAndView audittoBase(HttpServletRequest request){
+		String dcnumber=request.getParameter("dcnumber");
+		String borrowid=request.getParameter("borrowid");
+		String borrowname=request.getParameter("borrowname");
+		String borrowde=request.getParameter("borrowde");
+		String link_contractName=request.getParameter("link_contractName");
+		String link_reason=request.getParameter("link_reason");
+		String link_abacktime=request.getParameter("link_abacktime");
+		String link_spid = request.getParameter("link_spid");
+		String link_spname=request.getParameter("link_spname");
+		String link_spopinions=request.getParameter("link_spopinions");
+		String link_spdate=request.getParameter("link_spdate");
+		String link_abdate=request.getParameter("link_abdate");
+		String link_rdate=request.getParameter("link_rdate");
+		String link_note=request.getParameter("link_note");
+		String link_evaluation=request.getParameter("link_evaluation");
+		String audittype=request.getParameter("radio");
+	
+	    ContractInfor contract =new ContractInfor();
+	    contract.setDcnumber(dcnumber);
+	    contract.setBorrowid(borrowid);
+	    contract.setBorrowname(borrowname);
+	    contract.setBorrowde(borrowde);
+	    contract.setLink_contractName(link_contractName);
+	    contract.setLink_reason(link_reason);
+	    contract.setLink_abacktime(link_abacktime);
+	    contract.setLink_spid(link_spid);
+	    contract.setLink_spname(link_spname);
+	    contract.setLink_spopinions(link_spopinions);
+	    contract.setLink_spdate(link_spdate);
+	    contract.setLink_abdate(link_abdate);
+	    contract.setLink_rdate(link_rdate);
+	    contract.setLink_note(link_note);
+	    contract.setLink_evaluation(link_evaluation);
+	    contract.setAudittype(audittype);
+	    //初始化容器
+	    ApplicationContext ctx=new ClassPathXmlApplicationContext("spring-mybatis.xml");
+        //获得bean
+	    ContractDao contractDao = ctx.getBean(ContractDao.class);
+	    contractDao.audittobase(contract);
+	    
+	    
+		return new ModelAndView("/dingdingweb/HUI/contract/AddSuccess");
+       
+	    
+	}
+	
+	
+	/**
+	 * 查询我的审批数据
+	 * @param searchkey
+	 * @return
+	 */
+	public List<ContractInfor>  selectContracter(String searchkey){
+        //初始化容器
+        ApplicationContext ctx=new ClassPathXmlApplicationContext("spring-mybatis.xml");
+        //获得bean
+        ContractDao contractDao = ctx.getBean(ContractDao.class);
+        List<ContractInfor> contractlist = contractDao.auditsearch(searchkey);
+        Iterator<ContractInfor> it = contractlist.iterator();
+//        while(it.hasNext()){
+//        	if (!(it.next().getAudittype()==null)) {
+//        		it.remove();
+//			}
+//        	
+//        }
+		return contractlist;
+        
+    }
+	
+	
+	/**
+	 * 
+	 * 跳转到我的申请页面
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="/Contract/tomyapply")
+	public ModelAndView toMyapply(HttpServletRequest request){
+		String userjson = request.getParameter("info");
+		ModelAndView mav = new ModelAndView();
+		if (userjson.equals("undefined")){
+			mav.setViewName("/dingdingweb/HUI/err");
+		}else {
+			JSONObject js = JSONObject.parseObject(userjson.replaceAll("'", "\""));
+	//		System.out.println("tonewselect"+userjson);
+			UserInfor usi = new UserInfor();
+			usi.setAvatar(js.getString("avatar"));
+			usi.setName(js.getString("name"));
+			usi.setUserid(js.getString("userid"));
+			usi.setDepartment(js.getString("department"));
+			List<UserInfor> userinfoList = new ArrayList<>();
+			userinfoList.add(usi);
+			String searchname= js.getString("name");
+	//		System.out.println("searchname:"+searchname);
+			if (searchname.equals("")) {
+				System.out.println("呵呵");
+			}else {
+//				List<ContractInfor> contractlist = selectContracter2(searchname);
+				mav.addObject("userinfoList", userinfoList);
+				mav.addObject("userjson", userjson.replaceAll("\"", "'"));
+//				mav.addObject("contractlist", contractlist);// 传入集合
+				mav.setViewName("/dingdingweb/HUI/contract/myapply");
+			}
+		}
+		return mav;
+	
+	}
+	
+	/**
+	 * 获取我的申请数据
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("/Contract/getMyContractApply")
+	public void getMyContractApply(HttpServletRequest request,HttpServletResponse response){
+		String name = request.getParameter("name").replace("欢迎您 : ", "");
+		String pageNum = request.getParameter("pageNum");
+		PageHelper.startPage(Integer.parseInt(pageNum), 12);
+		List<ContractInfor> bList = selectContracter2(name);
+		PageInfo<ContractInfor> pageInfo = new PageInfo<ContractInfor>(bList);
+		JSONObject re = new JSONObject();
+		re.put("blist", pageInfo.getList());
+		re.put("pageInfo", pageInfo);
+		try {			
+			PrintWriter out = response.getWriter();
+			out = response.getWriter();
+			out.print(re);
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	    /**
+	     * 查询我的申请
+	     * 
+	     * @param searchkey
+	     * @return
+	     */
+	public List<ContractInfor>  selectContracter2(String searchkey){
+        //初始化容器
+        ApplicationContext ctx=new ClassPathXmlApplicationContext("spring-mybatis.xml");
+        //获得bean
+        ContractDao contractDao = ctx.getBean(ContractDao.class);
+        List<ContractInfor> contractlist = contractDao.applysearch(searchkey);
+        Iterator<ContractInfor> it = contractlist.iterator();
+        while(it.hasNext()){
+        	if (!(it.next().getLink_evaluation()==null)) {
+        		it.remove();
+			}
+        	
+        }
+		return contractlist;
+        
+    }
+	
+	/**
+	 * 审核完毕提交评价
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="/Contract/applyToBasse")
+	public ModelAndView applyToBase(HttpServletRequest request){
+		String dcnumber=request.getParameter("dcnumber");
+		String borrowid=request.getParameter("borrowid");
+		String borrowname=request.getParameter("borrowname");
+		String borrowde=request.getParameter("borrowde");
+		String link_contractName=request.getParameter("link_contractName");
+		String link_reason=request.getParameter("link_reason");
+		String link_abacktime=request.getParameter("link_abacktime");
+		String link_spid = request.getParameter("link_spid");
+		String link_spname=request.getParameter("link_spname");
+		String link_spopinions=request.getParameter("link_spopinions");
+		String link_spdate=request.getParameter("link_spdate");
+		String link_abdate=request.getParameter("link_abdate");
+		String link_rdate=request.getParameter("link_rdate");
+		String link_note=request.getParameter("link_note");
+		String link_evaluation=request.getParameter("link_evaluation");
+		String audittype=request.getParameter("radio");
+	
+	    ContractInfor contract =new ContractInfor();
+	    contract.setDcnumber(dcnumber);
+	    contract.setBorrowid(borrowid);
+	    contract.setBorrowname(borrowname);
+	    contract.setBorrowde(borrowde);
+	    contract.setLink_contractName(link_contractName);
+	    contract.setLink_reason(link_reason);
+	    contract.setLink_abacktime(link_abacktime);
+	    contract.setLink_spid(link_spid);
+	    contract.setLink_spname(link_spname);
+	    contract.setLink_spopinions(link_spopinions);
+	    contract.setLink_spdate(link_spdate);
+	    contract.setLink_abdate(link_abdate);
+	    contract.setLink_rdate(link_rdate);
+	    contract.setLink_note(link_note);
+	    contract.setLink_evaluation(link_evaluation);
+	    contract.setAudittype(audittype);
+	    //初始化容器
+	    ApplicationContext ctx=new ClassPathXmlApplicationContext("spring-mybatis.xml");
+        //获得bean
+	    ContractDao contractDao = ctx.getBean(ContractDao.class);
+	    contractDao.applytobase(contract);
+		return new ModelAndView("/dingdingweb/HUI/contract/AddSuccess");
+	}
+	
+	
+	/**
+	 * 跳转到归还合同
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="/Contract/tomyback")
+	public ModelAndView tomyback(HttpServletRequest request){
+		
+		String userjson = request.getParameter("info");
+		ModelAndView mav = new ModelAndView();
+		if (userjson.equals("undefined")){
+			mav.setViewName("/dingdingweb/HUI/err");
+		}else {
+			JSONObject js = JSONObject.parseObject(userjson.replaceAll("'", "\""));
+	//		System.out.println("tomyback"+userjson);
+			UserInfor usi = new UserInfor();
+			usi.setAvatar(js.getString("avatar"));
+			usi.setName(js.getString("name"));
+			usi.setUserid(js.getString("userid"));
+			usi.setDepartment(js.getString("department"));
+			List<UserInfor> userinfoList = new ArrayList<>();
+			userinfoList.add(usi);
+			String searchname= js.getString("name");
+	//		System.out.println("searchname:"+searchname);
+			if (searchname.equals("")) {
+				System.out.println("呵呵");
+			}else {
+//				List<ContractInfor> contractlist = selectContracter3(searchname);
+				mav.addObject("userinfoList", userinfoList);
+				mav.addObject("userjson", userjson.replaceAll("\"", "'"));
+//				mav.addObject("contractlist", contractlist);// 传入集合
+				mav.setViewName("/dingdingweb/HUI/contract/myback");
+			}
+		}
+		
+		return mav;
+	}
+	
+	/**
+	 * 获取需要归还的合同信息
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("/Contract/getBackContract")
+	public void getBackContractInfor(HttpServletRequest request ,HttpServletResponse response){
+		String name = request.getParameter("name").replace("欢迎您 : ", "");
+		String pageNum = request.getParameter("pageNum");
+		PageHelper.startPage(Integer.parseInt(pageNum), 12);
+		List<ContractInfor> bList = selectContracter3(name);
+		PageInfo<ContractInfor> pageInfo = new PageInfo<ContractInfor>(bList);
+		JSONObject re = new JSONObject();
+		re.put("blist", pageInfo.getList());
+		re.put("pageInfo", pageInfo);
+		try {			
+			PrintWriter out = response.getWriter();
+			out = response.getWriter();
+			out.print(re);
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+     * 查询未归还合同
+     * 
+     * @param searchkey
+     * @return
+     */
+public List<ContractInfor>  selectContracter3(String searchkey){
+    //初始化容器
+    ApplicationContext ctx=new ClassPathXmlApplicationContext("spring-mybatis.xml");
+    //获得bean
+    ContractDao contractDao = ctx.getBean(ContractDao.class);
+    List<ContractInfor> contractlist = contractDao.backsearch(searchkey);
+    Iterator<ContractInfor> it = contractlist.iterator();
+    while(it.hasNext()){
+    	if (!(it.next().getLink_rdate()==null)) {
+    		it.remove();
+		}
+    	
+    }
+	return contractlist;
+    
+}
+
+
+/**
+ * 
+ * 归还合同入库
+ * @param request
+ * @return
+ */
+@RequestMapping(value="/Contract/backToBase")
+public ModelAndView backtobase(HttpServletRequest request){
+	
+	String dcnumber=request.getParameter("dcnumber");
+	String borrowid=request.getParameter("borrowid");
+	String borrowname=request.getParameter("borrowname");
+	String borrowde=request.getParameter("borrowde");
+	String link_contractName=request.getParameter("link_contractName");
+	String link_reason=request.getParameter("link_reason");
+	String link_abacktime=request.getParameter("link_abacktime");
+	String link_spid = request.getParameter("link_spid");
+	String link_spname=request.getParameter("link_spname");
+	String link_spopinions=request.getParameter("link_spopinions");
+	String link_spdate=request.getParameter("link_spdate");
+	String link_abdate=request.getParameter("link_abdate");
+	String link_rdate=request.getParameter("link_rdate");
+	String link_note=request.getParameter("link_note");
+	String link_evaluation=request.getParameter("link_evaluation");
+	String audittype=request.getParameter("radio");
+
+    ContractInfor contract =new ContractInfor();
+    contract.setDcnumber(dcnumber);
+    contract.setBorrowid(borrowid);
+    contract.setBorrowname(borrowname);
+    contract.setBorrowde(borrowde);
+    contract.setLink_contractName(link_contractName);
+    contract.setLink_reason(link_reason);
+    contract.setLink_abacktime(link_abacktime);
+    contract.setLink_spid(link_spid);
+    contract.setLink_spname(link_spname);
+    contract.setLink_spopinions(link_spopinions);
+    contract.setLink_spdate(link_spdate);
+    contract.setLink_abdate(link_abdate);
+    contract.setLink_rdate(link_rdate);
+    contract.setLink_note(link_note);
+    contract.setLink_evaluation(link_evaluation);
+    contract.setAudittype(audittype);
+    //初始化容器
+    ApplicationContext ctx=new ClassPathXmlApplicationContext("spring-mybatis.xml");
+    //获得bean
+    ContractDao contractDao = ctx.getBean(ContractDao.class);
+    contractDao.backtobase(contract);
+	return new ModelAndView("/dingdingweb/HUI/contract/AddSuccess");
+	
+}
+
+
+/**
+ * 
+ * 跳转到确认已归还合同是否归还
+ * @param request
+ * @return
+ */
+@RequestMapping(value="/Contract/tosureback")
+public ModelAndView tosureback(HttpServletRequest request){
+	ModelAndView mav = new ModelAndView();
+	String userjson = request.getParameter("info");
+	if (userjson.equals("undefined")){
+		mav.setViewName("/dingdingweb/HUI/err");
+	}else {
+		JSONObject js = JSONObject.parseObject(userjson.replaceAll("'", "\""));
+	//	System.out.println("tomyback"+userjson);
+		UserInfor usi = new UserInfor();
+		usi.setAvatar(js.getString("avatar"));
+		usi.setName(js.getString("name"));
+		usi.setUserid(js.getString("userid"));
+		usi.setDepartment(js.getString("department"));
+		List<UserInfor> userinfoList = new ArrayList<>();
+		userinfoList.add(usi);
+		String searchname= js.getString("name");
+	//	System.out.println("searchname:"+searchname);
+		if (searchname.equals("")) {
+			System.out.println("呵呵");
+		}else {
+//			List<ContractInfor> contractlist = selectContracter4(searchname);
+			mav.addObject("userinfoList", userinfoList);
+			mav.addObject("userjson", userjson.replaceAll("\"", "'"));
+//			mav.addObject("contractlist", contractlist);// 传入集合
+			mav.setViewName("/dingdingweb/HUI/contract/sureback");
+		}
+	}
+	return mav;
+}
+
+@RequestMapping("/Contract/getSureBack")
+public void getSureBackInfor(HttpServletRequest request ,HttpServletResponse response){
+	String name = request.getParameter("name").replace("欢迎您 : ", "");
+	String pageNum = request.getParameter("pageNum");
+	PageHelper.startPage(Integer.parseInt(pageNum), 12);
+	List<ContractInfor> bList = selectContracter4(name);
+	PageInfo<ContractInfor> pageInfo = new PageInfo<ContractInfor>(bList);
+	JSONObject re = new JSONObject();
+	re.put("blist", pageInfo.getList());
+	re.put("pageInfo", pageInfo);
+	try {			
+		PrintWriter out = response.getWriter();
+		out = response.getWriter();
+		out.print(re);
+		out.flush();
+		out.close();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+}
+
+/**
+ * 查询已归还合同
+ * 
+ * @param searchkey
+ * @return
+ */
+public List<ContractInfor>  selectContracter4(String searchkey){
+//初始化容器
+ApplicationContext ctx=new ClassPathXmlApplicationContext("spring-mybatis.xml");
+//获得bean
+ContractDao contractDao = ctx.getBean(ContractDao.class);
+List<ContractInfor> contractlist = contractDao.finalsearch(searchkey);
+Iterator<ContractInfor> it = contractlist.iterator();
+
+return contractlist;
+
+}
+
+
+/**
+ * 
+ * 确认合同已归还入库
+ * @param request
+ * @return
+ */
+@RequestMapping(value="/Contract/finalToBase")
+public ModelAndView finaltobase(HttpServletRequest request){
+	
+	String dcnumber=request.getParameter("dcnumber");
+	String borrowid=request.getParameter("borrowid");
+	String borrowname=request.getParameter("borrowname");
+	String borrowde=request.getParameter("borrowde");
+	String link_contractName=request.getParameter("link_contractName");
+	String link_reason=request.getParameter("link_reason");
+	String link_abacktime=request.getParameter("link_abacktime");
+	String link_spid = request.getParameter("link_spid");
+	String link_spname=request.getParameter("link_spname");
+	String link_spopinions=request.getParameter("link_spopinions");
+	String link_spdate=request.getParameter("link_spdate");
+	String link_abdate=request.getParameter("link_abdate");
+	String link_rdate=request.getParameter("link_rdate");
+	String link_note=request.getParameter("link_note");
+	String link_evaluation=request.getParameter("link_evaluation");
+	String audittype=request.getParameter("radio");
+
+    ContractInfor contract =new ContractInfor();
+    contract.setDcnumber(dcnumber);
+    contract.setBorrowid(borrowid);
+    contract.setBorrowname(borrowname);
+    contract.setBorrowde(borrowde);
+    contract.setLink_contractName(link_contractName);
+    contract.setLink_reason(link_reason);
+    contract.setLink_abacktime(link_abacktime);
+    contract.setLink_spid(link_spid);
+    contract.setLink_spname(link_spname);
+    contract.setLink_spopinions(link_spopinions);
+    contract.setLink_spdate(link_spdate);
+    contract.setLink_abdate(link_abdate);
+    contract.setLink_rdate(link_rdate);
+    contract.setLink_note(link_note);
+    contract.setLink_evaluation(link_evaluation);
+    contract.setAudittype(audittype);
+    //初始化容器
+    ApplicationContext ctx=new ClassPathXmlApplicationContext("spring-mybatis.xml");
+    //获得bean
+    ContractDao contractDao = ctx.getBean(ContractDao.class);
+    contractDao.finaltobase(contract);
+	return new ModelAndView("/dingdingweb/HUI/contract/AddSuccess");
+	
+}
+	
+	
+}

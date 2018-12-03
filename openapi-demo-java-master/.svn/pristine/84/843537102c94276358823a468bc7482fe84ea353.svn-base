@@ -1,0 +1,3 @@
+2018-07-27 09:16:33,827 WARN  org.springframework.web.servlet.PageNotFound:1136 - No mapping found for HTTP request with URI [/dingdingweb/HUI/css/fonts/iconfont.eot] in DispatcherServlet with name 'spring-mvc'
+2018-07-27 09:17:32,272 WARN  org.springframework.web.servlet.PageNotFound:1136 - No mapping found for HTTP request with URI [/dingdingweb/HUI/css/fonts/iconfont.eot] in DispatcherServlet with name 'spring-mvc'
+2018-07-27 09:17:34,415 WARN  org.springframework.web.servlet.PageNotFound:1136 - No mapping found for HTTP request with URI [/dingdingweb/HUI/css/fonts/iconfont.eot] in DispatcherServlet with name 'spring-mvc'

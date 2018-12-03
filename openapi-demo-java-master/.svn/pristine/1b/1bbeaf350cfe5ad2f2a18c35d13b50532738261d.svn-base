@@ -1,0 +1,3 @@
+2018-07-19 15:41:07,794 WARN  org.springframework.web.servlet.PageNotFound:1136 - No mapping found for HTTP request with URI [/Message] in DispatcherServlet with name 'spring-mvc'
+2018-07-19 15:41:22,580 WARN  org.springframework.web.servlet.PageNotFound:1136 - No mapping found for HTTP request with URI [/My] in DispatcherServlet with name 'spring-mvc'
+2018-07-19 15:41:31,687 WARN  org.springframework.web.servlet.PageNotFound:1136 - No mapping found for HTTP request with URI [/Message] in DispatcherServlet with name 'spring-mvc'

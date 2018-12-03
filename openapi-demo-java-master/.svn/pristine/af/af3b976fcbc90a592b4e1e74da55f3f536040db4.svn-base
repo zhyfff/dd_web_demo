@@ -1,0 +1,28 @@
+package Hisign.Service;
+
+import java.util.List;
+
+import Hisign.entity.ApplyCarInfor;
+import Hisign.entity.BusinessCardInfor;
+import Hisign.entity.ContractInfor;
+import Hisign.entity.CourierInfor;
+import Hisign.entity.ProcessInfo;
+
+public interface ProcessService {
+
+	public List<ProcessInfo> seachTodoMessage(String auditname);
+	public List<ProcessInfo> seachHavedealMessage(String auditname);
+	public List<CourierInfor> getCourierMessageDetail(String dcnumber,String type);
+	public List<ContractInfor> getContractMessageDetail(String dcnumber,String type);
+	public List<ApplyCarInfor> getApplyCarMessageDetail(String dcnumber,String type);
+	public List<BusinessCardInfor> getBusinessCardMessageDetail(String dcnumber,String type);
+	public String insert(String dcnumber,String name,String audit_name,String type);
+	public String updateState(String dcnumber);
+	public int searchPointMsg(String searchkey,String name);
+	public int MyContractMsgPoint(String name);//查询我借用的合同数量
+	public int ConfirmToreceiveCourierPointMsg(String name);//查询需要领取确认的快递信息数量
+	public int getMyCarPointMsg(String name);//查询我的车辆借用信息数量
+	public int getMyBusinessCardPointMsg(String name);//查询我的名片制作信息数量
+	public int getCreateCardPointMsg(String name);//查询需要制作的名片信息数量
+
+}

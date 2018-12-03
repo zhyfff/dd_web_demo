@@ -1,0 +1,125 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%-- <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%> --%>
+<%-- <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%> --%>
+<%-- <%@ page isELIgnored="false" %> --%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta content="telephone=no,email=no" name="format-detection">
+<meta name="wap-font-scale" content="no">
+<title>人力服务（人力资源中心）</title>
+</head>
+<body>
+	<form action="rlfw/add" method="post">
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			单据号:<input type="text" name="rlfw_doc_num" id="rlfw_doc_num" value="${s.rlfw_doc_num}"> --%>
+		<!-- 		</div> -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			借用人员工号:<input type="text" name="rlfw_use_peo_num" id="rlfw_use_peo_num" value="${s.rlfw_use_peo_num}"> --%>
+		<!-- 		</div> -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			借用人员姓名:<input type="text" name="rlfw_use_peo_name" id="rlfw_use_peo_name" value="${s.rlfw_use_peo_name}"> --%>
+		<!-- 		</div> -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			借用人员部门:<input type="text" name="rlfw_use_peo_depart" id="rlfw_use_peo_depart" value="${s.rlfw_use_peo_depart}"> --%>
+		<!-- 		</div>		 -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			借用文件:<input type="text" name="rlfw_use_doc" id="rlfw_use_doc" value="${s.rlfw_use_doc}"> --%>
+		<!-- 		</div> -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			借用事由:<input type="text" name="rlfw_use_desc" id="rlfw_use_desc" value="${s.rlfw_use_desc}"> --%>
+		<!-- 		</div> -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			预计还回时间:<input type="date" name="rlfw_exp_re_time" id="rlfw_exp_re_time" value="${s.rlfw_exp_re_time}"> --%>
+		<!-- 		</div> -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			审批人员工号:<input type="text" name="rlfw_app_peo_num" id="rlfw_app_peo_num" value="${s.rlfw_app_peo_num}"> --%>
+		<!-- 		</div>				 -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			审批人员姓名:<input type="text" name="rlfw_app_peo_name" id="rlfw_app_peo_name" value="${s.rlfw_app_peo_name}"> --%>
+		<!-- 		</div> -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			审批意见:<input type="text" name="rlfw_app_desc" id="rlfw_app_desc" value="${s.rlfw_app_desc}"> --%>
+		<!-- 		</div> -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			审批时间:<input type="date" name="rlfw_app_time" id="rlfw_app_time" value="${s.rlfw_app_time}"> --%>
+		<!-- 		</div> -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			实际借出时间:<input type="date" name="rlfw_act_borr_time" id="rlfw_act_borr_time" value="${s.rlfw_act_borr_time}"> --%>
+		<!-- 		</div>				 -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			实际归还时间:<input type="date" name="rlfw_act_re_time" id="rlfw_act_re_time" value="${s.rlfw_act_re_time}"> --%>
+		<!-- 		</div> -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			备注:<input type="text" name="rlfw_remark" id="rlfw_remark" value="${s.rlfw_remark}"> --%>
+		<!-- 		</div> -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			服务评价:<input type="text" name="rlfw_evaluate" id="rlfw_evaluate" value="${s.rlfw_evaluate}"> --%>
+		<!-- 		</div> -->
+		<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+		<%-- 			结束时间:<input type="date" name="rlfw_end_time" id="rlfw_end_time" value="${s.rlfw_end_time}"> --%>
+		<!-- 		</div>	 -->
+		<!-- 		<button type="submit" class="weui-btn weui-btn_mini weui-btn_primary">提交</button> -->
+
+		<ul class="select-list">
+			<li>
+				<div class="number">
+					<span style="font-size: 18px;"> <span style="font-size: 14px;"> <!-- jstl核心标签库中的标签c:forEach --> <c:forEach items="${s}" var="s" varStatus="abc">
+								<div id="div1">
+									${abc.index}
+									<table border="2">
+										<tr>
+											<th>单 据 号</th>
+											<th>借用人员工号</th>
+											<th>借用人员姓名</th>
+											<th>借用人员部门</th>
+											<th>借 用 文 件</th>
+											<th>借 用 事 由</th>
+											<th>预计还回时间</th>
+											<th>审 批 状 态</th>
+											<th>审批人员工号</th>
+											<th>审批人员姓名</th>
+											<th>审 批 意 见</th>
+											<th>审 批 时 间</th>
+											<th>实际借出时间</th>
+											<th>实际归还时间</th>
+											<th>备 注</th>
+											<th>服 务 评 价</th>
+											<th>结 束 时 间</th>
+										</tr>
+										<tr>
+											<td>${s.rlfw_doc_num}</td>
+											<td>${s.rlfw_use_peo_num}</td>
+											<td>${s.rlfw_use_peo_name}</td>
+											<td>${s.rlfw_use_peo_depart}</td>
+											<td>${s.rlfw_use_doc}</td>
+											<td>${s.rlfw_use_desc}</td>
+											<td>${s.rlfw_exp_re_time}</td>
+											<td>${s.rlfw_doc_state}</td>
+											<td>${s.rlfw_app_peo_num}</td>
+											<td>${s.rlfw_app_peo_name}</td>
+											<td>${s.rlfw_app_desc}</td>
+											<td>${s.rlfw_app_time}</td>
+											<td>${s.rlfw_act_borr_time}</td>
+											<td>${s.rlfw_act_re_time}</td>
+											<td>${s.rlfw_remark}</td>
+											<td>${s.rlfw_evaluate}</td>
+											<td>${s.rlfw_end_time}</td>
+										</tr>
+									</table>
+								</div>
+							</c:forEach>
+					</span> <span style="font-size: 18px;"></span></span>
+				</div>
+			</li>
+		</ul>
+	</form>
+	<!-- jquery引入 -->
+	<script type="text/javascript" src="../public/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../public/js/jquery/flexible.js"></script>
+	<!-- weui引入 -->
+	<script type="text/javascript" src="../public/js/jquery/weui.js"></script>
+</body>
+</html>

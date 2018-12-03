@@ -1,0 +1,14 @@
+package Hisign.dao;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface SearchMessageDao {
+	
+	public int searchContractapply(@Param("searchkey")String searchkey);//查询合同借用申请消息数量
+	public int searchContractaduit(@Param("searchkey")String searchkey);//查询合同借用审核消息数量
+	public int searchContractSureBack(@Param("searchkey")String searchkey);//查询合同借用归还确认消息数量
+	
+
+}

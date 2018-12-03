@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Hisign.dao.FeedbackDao">
+
+	<select id="Insert" resultType="Hisign.entity.FeedbackInfor" parameterType= "Hisign.entity.FeedbackInfor">
+     insert into feedback (dctid,anonymous,complaint_jobnum,complaint_people,complaint_depart,complaint_content,complaint_time,recive_people,test_time) values(#{dctid},#{anonymous},#{complaint_jobnum},#{complaint_people},#{complaint_depart},#{complaint_content},#{complaint_time},#{recive_people},#{test_time});	</select>
+	<select id="Recive" resultType="Hisign.entity.FeedbackInfor" parameterType= "java.lang.String">
+		select * from feedback where recive_people = #{searchname} and done_time is null;
+	</select>
+	<select id="Backing" resultType="Hisign.entity.FeedbackInfor" parameterType= "java.lang.String">
+	    select * from feedback where complaint_people=#{searchname} and done_time is null;
+	</select>
+	<select id="Find" resultType="Hisign.entity.FeedbackInfor" parameterType= "java.lang.String">
+		select * from feedback where test_time=#{searchname};
+	</select>
+	<select id="toBakcontent" resultType="Hisign.entity.FeedbackInfor" parameterType= "Hisign.entity.FeedbackInfor">
+		update feedback set back_time=#{back_time},back_content=#{back_content} where dctid=#{dctid};
+	</select>
+	<select id="toRating" resultType="Hisign.entity.FeedbackInfor" parameterType= "Hisign.entity.FeedbackInfor">
+		update feedback set done_time=#{done_time},service_rating=#{service_rating} where dctid=#{dctid};
+	</select>
+
+
+</mapper>

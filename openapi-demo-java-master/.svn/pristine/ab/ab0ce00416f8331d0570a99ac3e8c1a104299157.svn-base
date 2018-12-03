@@ -1,0 +1,10 @@
+package Hisign.Service;
+
+public interface SearchMessageService {
+	
+	public int searchContractapply(String searchkey);//查询合同借用申请消息数量
+	public int searchContractaduit(String searchkey);//查询合同借用审核消息数量
+	public int searchContractSureBack(String searchkey);//查询合同借用归还确认消息数量
+	
+
+}

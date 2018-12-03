@@ -1,0 +1,995 @@
+function getContractMessageDetail(){
+	var dc = $("#dcnumber").attr("value");
+	var ty = $("#type").attr("value");
+	$.ajax({
+		url:'Message/getDetailMessage?dcnumber='+dc+'&type='+encodeURIComponent(ty),
+		type:'GET',
+		dataType:'text',
+		success:function (result){
+			hui.closeLoading();
+			var re = JSON.parse(JSON.stringify(result));
+			var blist = JSON.parse(re).blist;
+			var s = '';
+			for (var i = 0; i < blist.length; i++) {
+				var dcnumber=blist[i].dcnumber
+				var borrowid=blist[i].borrowid
+				var borrowname=blist[i].borrowname
+				var borrowde=blist[i].borrowde
+				var link_contractName=blist[i].link_contractName
+				var link_reason=blist[i].link_reason
+				var link_abacktime=blist[i].link_abacktime
+				var link_spid=blist[i].link_spid
+				var link_spname=blist[i].link_spname
+				var link_spopinions=blist[i].link_spopinions
+				var link_spdate=blist[i].link_spdate
+				var link_abdate=blist[i].link_abdate
+				var link_rdate=blist[i].link_rdate
+				var link_note=blist[i].link_note
+				var link_evaluation=blist[i].link_evaluation
+				var overdate=blist[i].overdate
+				var audittype=blist[i].audittype
+				var s = '';
+				if (link_rdate != null&&overdate != null&&audittype== '是') {
+					s='已确认归还';
+				}else if (audittype=='是'&&link_rdate==null&&link_evaluation==null) {
+					s='审核通过';
+				}else if (audittype == '否') {
+					s='已拒绝';
+				}else if (audittype==null&&link_rdate==null) {
+					s='未审批';
+				}else if (link_rdate==null&&audittype=='是'&&link_evaluation!=null&&overdate==null) {
+					s='未归还';
+				}else if (audittype=='是'&&link_rdate!= null &&overdate==null) {
+					s='已归还未确认';
+				}
+				
+				var div = document.createElement('div');
+				 div.innerHTML =
+					 '<div id="audit-table" style="display:none">'+
+					 			'<form action="Contract/auditToBase" method="post" id="audit" class="hui-form">'+
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">处理状态</div>'+
+									'<input type="text" name="cl" id="cl"'+
+										'class="hui-input" value="'+s+'" readonly="readonly">'+
+								'</div>'+
+								'<div class="hui-form-items">'+
+									'<div class="hui-form-items-title">单据号</div>'+
+									'<input type="text" name="dcnumber" id="dcnumber"'+
+										'class="hui-input" value="'+dcnumber+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">借用人员工号</div>'+
+								'<input type="text" name="borrowid" id="borrowid"'+
+									'class="hui-input" value="'+borrowid+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">借用人员姓名</div>'+
+								'<input type="text" name="borrowname" id="borrowname"'+
+									'class="hui-input" value="'+borrowname+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">借用人员部门</div>'+
+								'<input type="text" name="borrowde" id="borrowde"'+
+									'class="hui-input" value="'+borrowde+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">借用合同名</div>'+
+								'<input type="text" name="link_contractName" id="link_contractName"'+
+									'class="hui-input" value="'+link_contractName+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">借用事由</div>'+
+								'<input type="text" name="link_reason" id="link_reason"'+
+									'class="hui-input" value="'+link_reason+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">预计还回时间</div>'+
+								'<input type="text" name="link_abacktime" id="link_abacktime"'+
+									'class="hui-input" value="'+link_abacktime+'" readonly="readonly">'+
+								'</div>'+
+								
+								
+								'<input type="hidden" name="link_spid" id="link_spid"'+
+									'class="hui-input" value="'+link_spid+'" readonly="readonly">'+
+								
+								
+								
+								'<input type="hidden" name="link_spname" id="link_spname"'+
+									'class="hui-input" value="'+link_spname+'" readonly="readonly">'+
+								
+								'<div id="never">'+
+								
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">审批意见</div>'+
+								'<input  type="text" class="hui-input" id="link_spopinions"  name="link_spopinions" required="required" checkType="string" checkData="6,30" checkMsg="审批意见应为6-30个字符">'+
+								'</div>'+
+							
+								
+								'<div class="hui-form-items">'+	
+								'<div class="hui-form-items-title">审批时间</div>'+
+								'<input type="date" id="link_spdate" name="link_spdate" required="required" class="hui-input">'+
+								'</div>'+	
+								
+								'<div class="hui-form-items">'+						
+								'<div class="hui-form-items-title">实际借出时间</div>'+
+								'<input type="date" id="link_abdate" name="link_abdate" required="required" class="hui-input">'+
+								'</div>'+	
+								
+							
+						
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">是否同意</div>'+
+								'<select id="radio" name="radio" class="radio" >'+
+									'<option value="是">是</option>'+
+									'<option value="否">否</option>'+
+								'</select>'+
+								'</div>'+
+							
+								'<div style="padding: 10px 30px 60px 10px;">'+
+									'<div class="hui-form-items-title"></div>'+
+									'<input type="submit" id="submit" name="submit" value="提交审核"'+
+										'class="hui-button hui-primary hui-fr">'+
+								'</div>'+	
+								'</div>'+
+								'</form>'+
+					'</div>'+
+					
+					'<div id ="myapply-table" style="display:none">'+
+								'<form action="Contract/applyToBasse" method="post" id="myapply" class="hui-form">'+
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">处理状态</div>'+
+									'<input type="text" name="cl" id="cl"'+
+										'class="hui-input" value="'+s+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<div class="hui-form-items">'+
+						     	'<div class="hui-form-items-title">单据号</div>'+		
+								'<input type="text" readonly="readonly"'+
+									'value="'+dcnumber+'" id="dcnumber" name="dcnumber" class="hui-input">'+
+								'</div>'+
+			
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+borrowid+'" id="borrowid" name="borrowid">'+
+							
+						
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+borrowname+'" id="borrowname" name="borrowname">'+
+							
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+borrowde+'" id="borrowde" name="borrowde">'+
+							
+								'<div class="hui-form-items">'+
+							    '<div class="hui-form-items-title">借用合同名</div>'+
+								'<input type="text" readonly="readonly"'+
+									'value="'+link_contractName+'" id="link_contractName" name="link_contractName" class="hui-input">'+
+								'</div>'+
+							
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+link_reason+'" id="link_reason" name="link_reason">'+
+							
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+link_abacktime+'" id="link_abacktime" name="link_abacktime">'+
+							
+								'<input type="hidden" value="'+s.link_spid+'" id="link_spid" name="link_spid">'+
+							
+								'<input type="hidden" value="'+link_spname+'" id="link_spname" name="link_spname">'+
+							
+								'<input  type="hidden" id="link_spopinions" name="link_spopinions" value="'+link_spopinions+'">'+
+							
+								'<input type="hidden" id="link_spdate" name="link_spdate" value="'+link_spdate+'">'+
+							
+								'<input type="hidden" id="link_abdate" name="link_abdate" value="'+link_abdate+'">'+
+							
+								'<input type="hidden" id="radio" name="radio" value="'+audittype+'">'+
+							
+								'<div id="never">'+
+								'<div class="hui-form-items">'+
+						     	'<div class="hui-form-items-title">服务评价</div>'+
+						     	'<textarea placeholder="服务评价" name="link_evaluation" required="required"></textarea>'+
+						     	'</div>'+
+			
+						    
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">备注</div>'+
+								 '<textarea placeholder="备注" name="link_note" required="required"></textarea>'+
+								'</div>'+
+							
+								'<div  style="padding:15px 30px 50px 10px; ">'+
+								'<div class="hui-form-items-title"></div>'+
+									'<input id="submit" type="submit" value="提交评价" class="hui-button hui-primary hui-fr">'+
+								'</div>'+
+								'</div>'+
+								'</form>'+
+					'</div>'+
+					
+					'<div id="myback-table" style="display:none">'+
+								'<form action="Contract/backToBase" method="post" id="myback" class="hui-form">'+
+								
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">处理状态</div>'+
+									'<input type="text" name="cl" id="cl"'+
+										'class="hui-input" value="'+s+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<div class="hui-form-items">'+
+						     	'<div class="hui-form-items-title">单据号</div>'+
+								'<input type="text" readonly="readonly"'+
+									'value="'+dcnumber+'" class="hui-input" id="dcnumber" name="dcnumber">'+
+								'</div>'+
+								
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+borrowid+'" id="borrowid" name="borrowid">'+
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+borrowname+'" id="borrowname" name="borrowname">'+
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+borrowde+'" id="borrowde" name="borrowde">'+
+									
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">借用合同名</div>'+
+								'<input type="text" readonly="readonly"'+
+									'value="'+link_contractName+'" class="hui-input" id="link_contractName" name="link_contractName">'+
+								'</div>'+
+								
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+link_reason+'" id="link_reason" name="link_reason">'+
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+link_abacktime+'" id="link_abacktime" name="link_abacktime">'+
+								'<input type="hidden" value="'+link_spid+'" id="link_spid" name="link_spid">'+
+								'<input type="hidden" value="'+link_spname+'" id="link_spname" name="link_spname">'+
+								'<input type="hidden" id="link_spdate" name="link_spdate" value="'+link_spdate+'">'+
+								'<input type="hidden" id="link_abdate" name="link_abdate" value="'+link_abdate+'">'+
+								'<input type="hidden" id="radio" name="radio" value="'+audittype+'">'+
+									'<input type="hidden" id="link_evaluation"'+
+									'name="link_evaluation" value="'+link_evaluation+'">'+
+								'<input type="hidden" id="link_note" name="link_note" value="'+link_note+'">'+
+			
+								'<div id="never">'+
+								'<div style="padding:15px 30px 50px 10px; ">'+
+								'<div class="hui-form-items-title"></div>'+
+									'<input type="submit" value="归还" class="hui-button hui-primary hui-fr">'+
+								'</div>'+
+								'</div>'+
+			
+								
+								'</form>'+
+					'</div>'+
+								
+								
+								
+					'<div id="findalback" style="display:none">'+
+								'<form action="Contract/finalToBase" method="post" id="sureback" class="hui-form" >'+
+								
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">处理状态</div>'+
+									'<input type="text" name="cl" id="cl"'+
+										'class="hui-input" value="'+s+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<div class="hui-form-items">'+
+						     	'<div class="hui-form-items-title">单据号</div>'+
+								'<input type="text" readonly="readonly"'+
+									'value="'+dcnumber+'" class="hui-input" id="dcnumber" name="dcnumber">'+
+								'</div>'+
+								
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+borrowid+'" id="borrowid" name="borrowid">'+
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+borrowname+'" id="borrowname" name="borrowname">'+
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+borrowde+'" id="borrowde" name="borrowde">'+
+									
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">借用合同名</div>'+
+								'<input type="text" readonly="readonly"'+
+									'value="'+link_contractName+'" class="hui-input" id="link_contractName" name="link_contractName">'+
+								'</div>'+
+								
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+link_reason+'" id="link_reason" name="link_reason">'+
+								'<input type="hidden" readonly="readonly"'+
+									'value="'+link_abacktime+'" id="link_abacktime" name="link_abacktime">'+
+								'<input type="hidden" value="'+link_spid+'" id="link_spid" name="link_spid">'+
+								'<input type="hidden" value="'+link_spname+'" id="link_spname" name="link_spname">'+
+								'<input type="hidden" id="link_spdate" name="link_spdate" value="'+link_spdate+'">'+
+								'<input type="hidden" id="link_abdate" name="link_abdate" value="'+link_abdate+'">'+
+								'<input type="hidden" id="radio" name="radio" value="'+audittype+'">'+
+									'<input type="hidden" id="link_evaluation"'+
+									'name="link_evaluation" value="'+link_evaluation+'">'+
+								'<input type="hidden" id="link_note" name="link_note" value="'+link_note+'">'+
+								'<div id="never">'+
+								'<div style="padding:15px 30px 50px 10px; ">'+
+								'<div class="hui-form-items-title"></div>'+
+									'<input type="submit" value="确认归还" class="hui-button hui-primary hui-fr">'+
+								'</div>'+
+								'</div>'+
+								'</form>'+
+						'</div>';
+		            
+		            hui(div).appendTo('#list');
+			}
+			showContract(s);
+			
+		},
+		error:function (){
+			alert("合同借用获取失败");
+		}
+	})
+	
+	
+}
+
+function showContract(s){
+//	alert(s);
+//	alert("audit_name:"+$("#audit_name").attr("value"));
+// 	alert("username:"+$("#username").attr("value"));
+// 	alert($("#name").attr("value"));
+	if (s=="未审批") {
+		$("#audit-table").show();
+		$("#myapply-table").remove();
+		$("#myback-table").remove();
+		$("#findalback").remove();
+		if ($("#username").attr("value")!=$("#audit_name").attr("value")) {
+			$("#never").remove();
+		}
+	}else if (s=="审核通过") {
+		$("#myapply-table").show();
+		$("#audit-table").remove();
+		$("#myback-table").remove();
+		$("#findalback").remove();
+		if ($("#username").attr("value")!=$("#name").attr("value")) {
+			$("#never").remove();
+		}
+	}else if (s=="未归还") {
+		$("#myback-table").show();
+		$("#findalback").remove();
+		$("#audit-table").remove();
+		$("#myapply-table").remove();
+		if ($("#username").attr("value")!=$("#name").attr("value")) {
+			$("#never").remove();
+		}
+	}else if (s=="已归还未确认") {
+		$("#findalback").show();
+		$("#audit-table").remove();
+		$("#myback-table").remove();
+		$("#myapply-table").remove();
+		if ($("#username").attr("value")!=$("#audit_name").attr("value")) {
+			$("#never").remove();
+		}
+	}else if (s=="已确认归还") {
+		$("#findalback").show();
+		$("#audit-table").remove();
+		$("#myback-table").remove();
+		$("#myapply-table").remove();
+		$("#never").remove();
+	}
+}
+
+/******************************************************************************************************/
+function getCourierMessageDetail(){
+	var dc = $("#dcnumber").attr("value");
+	var ty = $("#type").attr("value");
+	$.ajax({
+		url:'Message/getDetailMessage?dcnumber='+dc+'&type='+encodeURIComponent(ty),
+		type:'GET',
+		dataType:'text',
+		success:function (result){
+			hui.closeLoading();
+			var re = JSON.parse(JSON.stringify(result));
+			var blist = JSON.parse(re).blist;
+			var s = '';
+			for (var i = 0; i < blist.length; i++) {
+				var dcnumber=blist[i].dcnumber;
+				var recipients=blist[i].recipients;
+				var express_no=blist[i].express_no;
+				var notice_time=blist[i].notice_time;
+				var pay_type=blist[i].pay_type;
+				var notice_word=blist[i].notice_word;
+				var lq=blist[i].lq;
+				var express=blist[i].express;
+				var note=blist[i].note;
+				var evaluation=blist[i].evaluation;
+				var overtime=blist[i].overtime;
+				
+				if (lq!=null&&evaluation==null) {
+					s='已领取需确认';
+				}else if (lq==null) {
+					s='未领取';
+				}else if (evaluation!=null&&overtime!=null) {
+					s='已领取';
+				}
+				var div = document.createElement('div');
+				 div.innerHTML =
+						'<form action="Office/SaveRelq" method="post" id="saveMyCourier" class="hui-form">'+
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">处理状态</div>'+
+									'<input type="text" name="cl" id="cl"'+
+										'class="hui-input" value="'+s+'" readonly="readonly">'+
+								'</div>'+
+						
+								'<div class="hui-form-items">'+
+									'<div class="hui-form-items-title">单据号</div>'+
+									'<input type="text" name="dcnumber" id="dcnumber"'+
+										'class="hui-input" value="'+dcnumber+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">收件人</div>'+
+								'<input type="text" name="recipients" id="recipients"'+
+									'class="hui-input" value="'+recipients+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">快递号</div>'+
+								'<input type="text" name="express_no" id="express_no"'+
+									'class="hui-input" value="'+express_no+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">通知时间</div>'+
+								'<input type="text" name="notice_time" id="notice_time"'+
+									'class="hui-input" value="'+notice_time+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">是否到付</div>'+
+								'<input type="text" name="pay_type" id="pay_type"'+
+									'class="hui-input" value="'+pay_type+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<input type="hidden" id="notice-word" name="notice-word" value="'+notice_word+'">'+
+								
+								'<div id="hidden_lq">'+
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">领取人</div>'+
+								'<input type="text" name="lqh" id="lqh"'+
+									'class="hui-input" value="'+lq+'" readonly="readonly">'+
+								'</div>'+
+								'</div>'+
+								
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">快递公司</div>'+
+								'<input type="text" name="express" id="express"'+
+									'class="hui-input" value="'+express+'" readonly="readonly">'+
+								'</div>'+
+								
+								'<div id="never">'+
+								
+								'<input type="hidden" id="notice-word" name="notice-word" value="'+notice_word+'">'+
+								'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">领取人</div>'+
+								'<input type="text" name="lq" id="lq"'+
+									'class="hui-input"  required="required">'+
+								'</div>'+
+								
+	
+								'<div style="padding:15px 30px 50px 10px; ">'+
+								'<div class="hui-form-items-title"></div>'+
+								'<input type = "submit" id = "submit" value ="确认登记领取人" class="hui-button hui-primary hui-fr">'+
+								'</div>'+
+								
+								'</div>'+
+							'<form>';
+						
+					
+		            hui(div).appendTo('#list');
+			}
+			showCourier(s);
+			
+		},
+		error:function (){
+			alert("快递发放获取失败");
+		}
+		
+	})
+	
+	
+}
+
+
+function showCourier(s){
+// 	alert("audit_name:"+$("#audit_name").attr("value"));
+// 	alert("username:"+$("#username").attr("value"));
+	if (s!="未领取"||$("#username").attr("value")!=$("#audit_name").attr("value")) {
+		$("#never").hide();
+	}else {
+		$("#hidden_lq").hide();
+	}
+}
+
+
+/*****************************************************************************************************/
+
+function getApplyCarMessageDetail(){
+	var dc = $("#dcnumber").attr("value");
+	var ty = $("#type").attr("value");
+	$.ajax({
+		url:'Message/getDetailMessage?dcnumber='+dc+'&type='+encodeURIComponent(ty),
+		type:'GET',
+		dataType:'text',
+		success:function (result){
+			hui.closeLoading();
+			var re = JSON.parse(JSON.stringify(result));
+			var blist = JSON.parse(re).blist;
+			var s = '';
+			for (var i = 0; i < blist.length; i++) {
+				var dcnumber=blist[i].dcnumber;
+				var jobnumber=blist[i].jobnumber;
+				var name=blist[i].name;
+				var borrowde=blist[i].borrowde;
+				var car_id=blist[i].car_id;
+				var car_name=blist[i].car_name;
+				var license_plate=blist[i].license_plate;
+				var apply_time=blist[i].apply_time;
+				var use_time=blist[i].use_time;
+				var apply_reason=blist[i].apply_reason;
+				var pnum=blist[i].pnum;
+				var driver=blist[i].driver;
+				var audit_name=blist[i].audit_name;
+				var audit_opinion=blist[i].audit_opinion;
+				var audit_time=blist[i].audit_time;
+				var note=blist[i].note;
+				var audit_type=blist[i].audit_type;
+				var evaluation=blist[i].evaluation;
+				var over_time=blist[i].over_time;
+				if (audit_opinion==null&&audit_time==null) {
+					s='未审核';
+				}else if (audit_opinion !=null&&audit_time !=null&&audit_type=='否') {
+					s='审核未通过';
+				}else if (evaluation!=null&& audit_type=='是'&&over_time==null) {
+					s='已归还需确认';
+				}else if (evaluation==null&& audit_type=='是'&&over_time==null) {
+					s='未归还';
+				}else if (evaluation!=null&& audit_type=='是'&&over_time!=null) {
+					s='已归还';
+				}
+				
+				var div = document.createElement('div');
+				 div.innerHTML = '<div id="ApplyAudit-table" style="display:none; margin-bottom: 50px;">'+
+					
+						'<form style="padding: 28px 10px;" id="saveAudit" name="audit" action="Office/ApplyCar/saveAudit" method="post" class="hui-form">'+
+							
+							'<div class="hui-form-items">'+
+							'<div class="hui-form-items-title">处理状态</div>'+
+								'<input type="text" name="cl" id="cl"'+
+									'class="hui-input" value="'+s+'" readonly="readonly">'+
+							'</div>'+
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">单据号</div>'+
+								'<input type="text" name="dcnumber" id="dcnumber" class="hui-input" value="'+dcnumber+'" readonly="readonly">'+
+							'</div>'+
+						
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">申请人工号</div>'+
+								'<input type="text" name="jobnumber" id="jobnumber" class="hui-input" value="'+jobnumber+'" readonly="readonly">'+
+							'</div>'+
+						
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">申请人姓名</div>'+
+								'<input type="text" name="name" id="name" class="hui-input" value="'+name+'" readonly="readonly">'+
+							'</div>'+
+						
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">申请人部门</div>'+
+								'<input type="text" name="borrowde" id="borrowde" class="hui-input" value="'+borrowde+'" readonly="readonly">'+
+							'</div>'+
+							
+							
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">车辆编号</div>'+
+								'<input type="text" name="car_id" id="car_id" class="hui-input" value="'+car_id+'" readonly="readonly">'+
+							'</div>'+
+						
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">车辆名称</div>'+
+								'<input type="text" name="car_name" id="car_name" class="hui-input" value="'+car_name+'" readonly="readonly">'+
+							'</div>'+
+						
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">车牌号</div>'+
+								'<input type="text" name="license_plate" id="license_plate" class="hui-input" value="'+license_plate+'" readonly="readonly">'+
+							'</div>'+
+						
+							'<input type="hidden" name="state" id="state" value="出库">'+
+							
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">申请时间</div>'+
+								'<input type="text" name="apply-time" id="apply-time" class="hui-input" value="'+apply_time+'" readonly="readonly">'+
+							'</div>'+
+						
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">使用时间</div>'+
+								'<input type="text" name="use-time" id="use-time" class="hui-input" value="'+use_time+'" readonly="readonly">'+
+							'</div>'+
+						
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">申请事由</div>'+
+								'<input type="text" name="apply-reason" id="apply-reason" class="hui-input" value="'+apply_reason+'" readonly="readonly">'+
+							'</div>'+
+						
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">乘坐人数</div>'+
+								'<input type="text" name="pnum" id="pnum" value="'+pnum+'" class="hui-input" readonly="readonly">'+
+							'</div>'+
+						
+						
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">是否需要司机</div>'+
+								'<input type="text" name="driver" id="driver" class="hui-input" value="'+driver+'" readonly="readonly">'+
+							'</div>'+
+						
+							'<div id ="never">'+
+								
+									'<div class="hui-form-items">'+
+										'<div class="hui-form-items-title">审批意见</div>'+
+										'<textarea id="audit-opinion" name="audit-opinion"  required="required"></textarea>'+
+									'</div>'+
+								
+									'<div class="hui-form-items">'+
+										'<div class="hui-form-items-title">审批时间</div>'+
+										'<input type="date" id="audit-time" name="audit-time"  class="hui-input" required="required">'+
+									'</div>'+
+								
+									'<div class="hui-form-items">'+
+										'<div class="hui-form-items-title">备注</div>'+
+										'<textarea id="note" name="note"  required="required"></textarea>'+
+									'</div>'+
+								
+								
+									'<div class="hui-form-items">'+
+									'<div class="hui-form-items-title">是否同意</div>'+
+									'<select id="radio" name="radio" class="radio" >'+
+										'<option value="是">是</option>'+
+										'<option value="否">否</option>'+
+									'</select>'+
+									'</div>'+
+								
+								
+									'<div style="padding:15px 30px 50px 10px; ">'+
+									'<div class="hui-form-items-title"></div>'+
+									'<input type = "submit" id = "submit" value ="确认" class="hui-button hui-primary hui-fr" >'+
+									'</div>'+
+							'</div>'+
+
+						'</form>'+
+				'</div>'+
+				
+				'<div id="sureback-table" style="display:none ;margin-bottom: 50px;">'+
+				'<form style="padding: 28px 10px;" id="surebackcar" name="surebackcar"'+
+					'action="Office/ApplyCar/savesure" method="post" class="hui-form">'+
+					
+					'<div class="hui-form-items">'+
+					'<div class="hui-form-items-title">处理状态</div>'+
+						'<input type="text" name="cl" id="cl"'+
+							'class="hui-input" value="'+s+'" readonly="readonly">'+
+					'</div>'+
+					
+					'<div class="hui-form-items">'+
+						'<div class="hui-form-items-title">单据号</div>'+
+						'<input type="text" name="dcnumber" id="dcnumber"'+
+							'class="hui-input" value="'+dcnumber+'" readonly="readonly">'+
+					'</div>'+
+
+					'<div class="hui-form-items">'+
+						'<div class="hui-form-items-title">申请人工号</div>'+
+						'<input type="text" name="jobnumber" id="jobnumber"'+
+							'class="hui-input" value="'+jobnumber+'" readonly="readonly">'+
+					'</div>'+
+
+					'<div class="hui-form-items">'+
+						'<div class="hui-form-items-title">申请人姓名</div>'+
+						'<input type="text" name="name" id="name" class="hui-input"'+
+							'value="'+name+'" readonly="readonly">'+
+					'</div>'+
+
+					'<div class="hui-form-items">'+
+						'<div class="hui-form-items-title">申请人部门</div>'+
+						'<input type="text" name="borrowde" id="borrowde"'+
+							'class="hui-input" value="'+borrowde+'" readonly="readonly">'+
+					'</div>'+
+
+					'<div class="hui-form-items">'+
+						'<div class="hui-form-items-title">申请时间</div>'+
+						'<input type="text" name="apply-time" id="apply-time"'+
+							'class="hui-input" value="'+apply_time+'" readonly="readonly">'+
+					'</div>'+
+
+					'<div class="hui-form-items">'+
+						'<div class="hui-form-items-title">使用时间</div>'+
+						'<input type="text" name="use-time" id="use-time"'+
+							'class="hui-input" value="'+use_time+'" readonly="readonly">'+
+					'</div>'+
+
+					'<div class="hui-form-items">'+
+						'<div class="hui-form-items-title">申请事由</div>'+
+						'<input type="text" name="apply-reason" id="apply-reason"'+
+							'class="hui-input" value="'+apply_reason+'" readonly="readonly">'+
+					'</div>'+
+
+					'<div class="hui-form-items">'+
+						'<div class="hui-form-items-title">乘坐人数</div>'+
+						'<input type="text" name="pnum" id="pnum" value="'+pnum+'"'+
+							'class="hui-input" readonly="readonly">'+
+					'</div>'+
+
+
+					'<div class="hui-form-items">'+
+						'<div class="hui-form-items-title">是否需要司机</div>'+
+						'<input type="text" name="driver" id="driver" class="hui-input"'+
+							'value="'+driver+'" readonly="readonly">'+
+					'</div>'+
+
+
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">审批意见</div>'+
+								'<input type="text" readonly="readonly" id="audit-opinion" name="audit-opinion"'+
+									'required="required" class="hui-input"'+
+									'value="'+audit_opinion+'">'+
+							'</div>'+
+
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">审批人</div>'+
+								'<input type="text" readonly="readonly" id="audit-name" name="audit-name"'+
+									'required="required" class="hui-input" value="'+audit_name+'">'+
+							'</div>'+
+
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">审批时间</div>'+
+								'<input type="text" readonly="readonly" id="audit-time" name="audit-time"'+
+									'required="required" class="hui-input" value="'+audit_time+'">'+
+							'</div>'+
+
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">备注</div>'+
+								'<input type="text" readonly="readonly" id="note" name="note" class="hui-input"'+
+									'required="required" value="'+note+'">'+
+							'</div>'+
+
+
+
+							'<input type="hidden" id="radio" name="radio" value="'+audit_type+'">'+
+							
+
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">服务评价</div>'+
+								'<input type="text" readonly="readonly" class="hui-input" id="evaluation" name="evaluation" required="required" value="'+evaluation+'">'+
+							'</div>'+
+							
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">车辆编号</div>'+
+								'<input type="text" name="car_id" id="car_id" class="hui-input" value="'+car_id+'" readonly="readonly">'+
+							'</div>'+
+					
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">车辆名称</div>'+
+								'<input type="text" name="car_name" id="car_name" class="hui-input" value="'+car_name+'" readonly="readonly">'+
+							'</div>'+
+						
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">车牌号</div>'+
+								'<input type="text" name="license_plate" id="license_plate" class="hui-input" value="'+license_plate+'" readonly="readonly">'+
+							'</div>'+
+							
+							'<div id="never">'+
+							'<input type="hidden" name="state" id="state" value="在库">'+
+							
+							'<div style="padding: 15px 30px 50px 10px;">'+
+								'<div class="hui-form-items-title"></div>'+
+								'<input type="submit" id="submit" value="确认归还"'+
+									'class="hui-button hui-primary hui-fr">'+
+							'</div>'+
+							'</div>'+
+					
+				'</form>'+
+			'</div>';
+				hui(div).appendTo('#list');
+			}
+			
+			showApplyCar(s);
+		},
+		error:function (){
+			alert("车辆借用信息获取失败");
+		}
+	})
+}
+
+function showApplyCar(s){
+	alert(s);
+	if (s=="未审核") {
+		$("#ApplyAudit-table").show();
+		$("#sureback-table").remove();
+		if ($("#username").attr("value")!=$("#audit_name").attr("value")) {
+			$("#never").remove();
+		}
+	}else if (s=="审核未通过"||s=="未归还"||s=="已归还") {
+		$("#ApplyAudit-table").show();
+		$("#sureback-table").remove();
+		$("#never").remove();
+	}else if (s=="已归还需确认") {
+		$("#sureback-table").show();
+		$("#ApplyAudit-table").remove();
+		if ($("#username").attr("value")!=$("#audit_name").attr("value")) {
+			$("#never").remove();
+		}
+	}
+}
+
+/*******************************************************************************************************/
+function getBusinessCardDetail(){
+	var dc = $("#dcnumber").attr("value");
+	var ty = $("#type").attr("value");
+	$.ajax({
+		url:'Message/getDetailMessage?dcnumber='+dc+'&type='+encodeURIComponent(ty),
+		type:'GET',
+		dataType:'text',
+		success:function (result){
+			hui.closeLoading();
+			var re = JSON.parse(JSON.stringify(result));
+			var blist = JSON.parse(re).blist;
+			var s = '';
+			for (var i = 0; i < blist.length; i++) {
+				var dcnumber = blist[i].dcnumber;
+				var jobnumber = blist[i].jobnumber;
+	    		var name = blist[i].name; 
+				var borrowde = blist[i].borrowde;
+				var email =blist[i].email;
+				var company=blist[i].company;
+				var web =blist[i].web;
+				var customertel=blist[i].customertel;
+				var num=blist[i].num;
+				var audit_name=blist[i].audit_name;
+				var audit_opinion=blist[i].audit_opinion;
+				var audit_time=blist[i].audit_time;
+				var audit_type=blist[i].audit_type;
+				var desk=blist[i].desk;
+				var lq=blist[i].lq;
+				var lq_time=blist[i].lq;
+				var evaluation=blist[i].evaluation
+				var over_time=blist[i].over_time
+				var QR_note=blist[i].QR_note
+				var s = '';
+				if (audit_type==null) {
+					s='未审核';
+				}else if (audit_type=='否') {
+					s='审核未通过';
+				}else if (audit_type=='是'&&desk!=null&&lq==null) {
+					s='制作中';
+				}else if (audit_type=='是'&&desk!=null&&lq!=null) {
+					s='已制作';
+				}else if (over_time!=null) {
+					s='已领取';
+				}
+				
+				var div = document.createElement('div');
+	            div.innerHTML =
+				'<div id="bussincardAudit-table" style="display:none ;margin-bottom: 50px;">'+
+						'<form action="Office/BusinessCard/save2Desk" method="post" id="toDesk" class="hui-form">'+
+							
+							'<div class="hui-form-items">'+
+							'<div class="hui-form-items-title">处理状态</div>'+
+								'<input type="text" name="cl" id="cl"'+
+									'class="hui-input" value="'+s+'" readonly="readonly">'+
+							'</div>'+
+							
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">单据号</div>'+
+								'<input type="text" name="dcnumber" id="dcnumber"'+
+									'class="hui-input" value="'+dcnumber+'" readonly="readonly">'+
+							'</div>'+
+								
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">申请人工号</div>'+
+								'<input type="text" name="jobnumber" id="jobnumber"'+
+									'class="hui-input" value="'+jobnumber+'" readonly="readonly">'+
+							'</div>'+
+
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">申请人姓名</div>'+
+								'<input type="text" name="name" id="name" class="hui-input"'+
+									'value="'+name+'" readonly="readonly">'+
+							'</div>'+
+
+							'<div class="hui-form-items">'+
+								'<div class="hui-form-items-title">申请人部门</div>'+
+								'<input type="text" name="borrowde" id="borrowde"'+
+									'class="hui-input" value="'+borrowde+'" readonly="readonly">'+
+							'</div>'+
+							
+							'<div class="hui-form-items">'+
+							'<div class="hui-form-items-title">邮箱</div>'+
+							'<input type="text" name="email" id="email"'+
+								'class="hui-input" value="'+email+'" readonly="readonly">'+
+							'</div>'+
+							
+							'<div class="hui-form-items">'+
+							'<div class="hui-form-items-title">公司名称</div>'+
+							'<input type="text" name="company" id="company"'+
+								'class="hui-input" value="'+company+'" readonly="readonly">'+
+							'</div>'+
+							
+							'<div class="hui-form-items">'+
+							'<div class="hui-form-items-title">公司网址</div>'+
+							'<input type="text" name="web" id="web"'+
+								'class="hui-input" value="'+web+'" readonly="readonly">'+
+							'</div>'+
+							
+							'<div class="hui-form-items">'+
+							'<div class="hui-form-items-title">客服电话</div>'+
+							'<input type="text" name="customertel" id="customertel"'+
+								'class="hui-input" value="'+customertel+'" readonly="readonly">'+
+							'</div>'+
+							
+							'<div class="hui-form-items">'+
+							'<div class="hui-form-items-title">申请数量</div>'+
+							'<input type="text" name="num" id="num"'+
+								'class="hui-input" value="'+num+'" readonly="readonly">'+
+							'</div>'+
+							
+							'<input type="hidden" name="audit-name" id="audit-name" value="'+audit_name+'">'+
+							
+							
+							'<div id="never">'+
+							'<div class="hui-form-items">'+
+							'<div class="hui-form-items-title">审批意见</div>'+
+							'<input type="text" name="audit_opinion" id="audit_opinion"'+
+								'class="hui-input" required="required">'+
+							'</div>'+
+							
+							'<div class="hui-form-items">'+
+							'<div class="hui-form-items-title">审批时间</div>'+
+							'<input type="date" name="audit_time" id="audit_time"'+
+								'class="hui-input" required="required">'+
+							'</div>'+
+							
+							'<div class="hui-form-items">'+
+							'<div class="hui-form-items-title">是否同意</div>'+
+							'<select id="audit_type" name="audit_type" class="audit_type" required="required">'+
+								'<option value="是">是</option>'+
+								'<option value="否">否</option>'+
+							'</select>'+
+							'</div>'+
+							
+							'<div class="hui-form-items">'+
+							'<div class="hui-form-items-title">前台人员</div>'+
+							'<input type="text" name="desk" id="desk"'+
+								'class="hui-input" required="required">'+
+							'</div>'+
+							
+							'<div style="padding:15px 30px 50px 10px; ">'+
+							'<div class="hui-form-items-title"></div>'+
+							'<input type = "submit" id = "submit" value ="提交" class="hui-button hui-primary hui-fr">'+
+							'</div>'+	
+							'</div>'+
+							
+						'<form>'+
+					'</div>';
+				
+				
+			
+	            
+	            hui(div).appendTo('#list');
+			}
+			showBusinessCard(s);
+		},
+		error:function(){
+			alert("名片制作申请获取失败");
+		}
+	})
+}
+
+function showBusinessCard(s){
+	if (s=='未审核') {
+		$("#bussincardAudit-table").show();
+		if ($("#username").attr("value")!=$("#audit_name").attr("value")) {
+			$("#never").remove();
+		}
+	}else if (s=='审核未通过'||s=='制作中'||s=='已制作'||s=='已领取') {
+		$("#bussincardAudit-table").show();
+		$("#never").remove();
+	}
+}

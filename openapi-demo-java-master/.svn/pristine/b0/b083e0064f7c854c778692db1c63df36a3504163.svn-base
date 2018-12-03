@@ -1,0 +1,28 @@
+package Hisign.Service.serviceImpl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import Hisign.Service.SearchMessageService;
+import Hisign.dao.SearchMessageDao;
+
+public class SearchMessageServiceImpl implements SearchMessageService {
+
+	@Autowired
+	private SearchMessageDao searchMessageDao;
+	
+	@Override
+	public int searchContractapply(String searchkey) {
+		return searchMessageDao.searchContractapply(searchkey);
+	}
+
+	@Override
+	public int searchContractaduit(String searchkey) {
+		return searchMessageDao.searchContractaduit(searchkey);
+	}
+
+	@Override
+	public int searchContractSureBack(String searchkey) {
+		return searchMessageDao.searchContractSureBack(searchkey);
+	}
+
+	
+}

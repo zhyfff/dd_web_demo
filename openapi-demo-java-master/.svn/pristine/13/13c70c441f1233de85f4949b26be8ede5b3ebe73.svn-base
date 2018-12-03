@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<%@ page language="java" import="java.util.*" contentType="text/html;charset=utf-8"%>
+<%@include file="/top.jsp"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<html>
+<head>
+<base href="<%=basePath%>">
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<meta charset="gbk">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection"/>
+<meta content="yes" name="apple-touch-fullscreen"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+<meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="yes" name="apple-touch-fullscreen" />    
+    <meta name="data-spm" content="a215s" />
+    <meta content="telephone=no,email=no" name="format-detection" />    
+    <meta content="fullscreen=yes,preventMove=no" name="ML-Config" />
+    <link href="icon114-114.png" rel="apple-touch-icon-precomposed">
+    <link href="icon.png" rel="Shortcut Icon" type="image/x-icon" />
+<script type="text/javascript">
+//在此拿到jsAPI权限验证配置所需要的信息
+	var _config = <%= com.alibaba.dingtalk.openapi.demo.auth.AuthHelper.getConfig(request) %>;
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<title>企业开发者首页</title>
+<script type="text/javascript" src="/dingdingweb/HUI/contract/js/zepto.min.js"></script>
+<script type="text/javascript" src="http://g.alicdn.com/dingding/open-develop/1.6.9/dingtalk.js">
+</script>
+<script type="text/javascript" src="/dingdingweb/HUI/contract/js/logger.js">
+</script>
+<!--免登相关代码 -->
+<!--  <script type="text/javascript" src="/dingdingweb/HUI/contract/js/getUserInfor.js"></script> -->
+
+
+<!-- jquery引入 -->
+	<script type="text/javascript"
+		src="/dingdingweb/public/js/jquery/jquery.js"></script>
+
+<script type="text/javascript">
+
+	dd.ready(function(){
+		dd.config({
+			agentId : _config.agentid,
+			corpId : _config.corpId,
+			timeStamp : _config.timeStamp,
+			nonceStr : _config.nonceStr,
+			signature : _config.signature,
+			jsApiList : [ 'runtime.info', 'biz.contact.choose',
+					'device.notification.confirm', 'device.notification.alert',
+					'device.notification.prompt', 'biz.ding.post',
+					'biz.util.openLink' ,'biz.contact.complexPicker']
+		});
+		dd.runtime.permission.requestAuthCode({
+			corpId : _config.corpId,
+			onSuccess : function(info) {
+//				alert('authcode: ' + info.code);
+				$.ajax({
+					url : '/Userinfor/getuserinfor.do?code=' + info.code + '&corpid='
+							+ _config.corpId,
+					type : 'GET',
+					dataType:"text",
+					success : function(data, status, xhr) {
+						var info = JSON.parse(data);
+//						alert('info:' + info); 
+						document.getElementById("userName").innerHTML = info.name;
+// 						document.getElementById("userId").innerHTML = info.userid;
+						
+						// 图片
+						if(info.avatar.length != 0){
+				            var img = document.getElementById("userImg");
+//				            alert(img.src);
+				            img.src = info.avatar;
+// 				                      img.height = '100';
+// 				                      img.width = '100';
+				          }
+// 						document.getElementById("contract").href="/saveUserInfor?info="+data
+						$("#info").val(data);
+						var url = '/saveUserInfor?info='+data
+						tosave(url);
+
+					},
+					error : function(xhr, errorType, error) {
+						logger.e("yinyien:" + _config.corpId);
+						alert(errorType + ', ' + error);
+					}
+				});
+				
+
+			},
+			onFail : function(err) {
+				alert('fail: ' + JSON.stringify(err));
+			}
+		});
+		
+	})
+	
+	function to2(){
+		
+		dd.ready(function(){
+			dd.biz.contact.complexPicker({
+				    title:"选人",            //标题
+				    corpId:_config.corpId,    //企业的corpId
+				    multiple:true,            //是否多选
+				    limitTips:"超出了",          //超过限定人数返回提示
+				    maxUsers:1000,            //最大可选人数
+				    pickedUsers:[],            //已选用户
+				    pickedDepartments:[],          //已选部门
+				    disabledUsers:[],            //不可选用户
+				    disabledDepartments:[],        //不可选部门
+				    requiredUsers:[],            //必选用户（不可取消选中状态）
+				    requiredDepartments:[],        //必选部门（不可取消选中状态）
+				    appId:_config.agentid,              //微应用的Id
+					permissionType:"GLOBAL",          //选人权限，目前只有GLOBAL这个参数
+				    responseUserOnly:false,        //返回人，或者返回人和部门
+					startWithDepartmentId:0 ,   // 0表示从企业最上层开始，IOS不支持该字段
+				    onSuccess: function(result) {
+					alert('complexPicker result: ' + JSON.stringify(result));
+				        /**
+				        {
+				            selectedCount:1,                              //选择人数
+				            users:[{"name":"","avatar":"","emplId":""}]，//返回选人的列表，列表中的对象包含name（用户名），avatar（用户头像），emplId（用户工号）三个字段
+				            departments:[{"id":,"name":"","number":}]//返回已选部门列表，列表中每个对象包含id（部门id）、name（部门名称）、number（部门人数）
+				        }
+				        */
+				    },
+				   onFail : function(err) {
+						
+					  alert('complexPicker error: ' + JSON.stringify(err));
+					
+				}
+				});
+		
+		});
+		
+	}
+	
+	
+	function tosave(url){
+			$.ajax({
+				url:url,
+				type:'GET',
+				dataType:"text",
+				success:function(data){
+// 					alert(data)
+				},
+				error:function(){
+					alert("保存失败")
+				},
+				
+			})
+		}
+	
+
+	function send2Contract(){
+		var info = $("#info").attr("value")
+// 		alert(info)
+		if (info=="") {
+			alert("请稍等")
+		}else{
+			window.location ='/Contract/tocontract.do?info='+info
+		}
+	}
+	
+	function send2Office(){
+		var info = $("#info").attr("value")
+// 		alert(info)
+		if (info=="") {
+			alert("请稍等")
+		}else{
+			window.location ='/Office/Office?info='+info
+		}
+	}
+</script>
+
+</head>
+
+<body >
+<header>
+
+	<div class="hui-list" align="center">
+		<div  class="hui-list-icons" style="width:110px; height:110px; ">
+			<img id ="userImg" alt="头像" src="./nav/default.png" style="width:110px; margin:0px; border-radius:50%;">
+		</div>
+		<div align="center" style="height:auto; height:40px; padding-bottom:8px;">
+			欢迎您  <div id="userName" ></div>
+		</div >
+<!-- 		<div align="center" style="height:auto; height:60px; padding-bottom:8px;"> -->
+<!-- 			您当前在钉钉的userId为  <div id="userId" ></div> -->
+<!-- 		</div> -->
+		
+		<div align="center">
+			<input id="info" type="hidden">
+		</div>
+		
+	</div>
+	
+</header>
+	<br>
+	<!-- <div style="padding-left:10px;">&nbsp;&nbsp;&nbsp;&nbsp;欢迎您：<div id="userName" style="display:inline-block;font-weight:bold"></div>&nbsp;成为钉钉开发者，您当前在钉钉的<code>userId</code>为：
+		<div id="userId" style="display:inline-block;font-weight:bold"></div> 。</div> -->
+<!-- 	<div style="padding-left:10px;">&nbsp;&nbsp;&nbsp;&nbsp;我们为您提供了文档＋<code>api</code>帮助您快速的开发微应用并接入钉钉。</div> -->
+	<br>
+	
+<!-- <div class="hui-list"> -->
+<!--  <ul> -->
+<!-- 		<li> -->
+<!-- 			<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/form.png" style="width: 25px; height: 25px"></div> -->
+<!-- 			<div class="hui-list-text">IT服务（总裁办IT信息部）</div> -->
+<!-- 		</li> -->
+
+<!-- 		<li> -->
+<!-- 			<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/form.png" style="width: 25px; height: 25px"></div> -->
+<!-- 			<div class="hui-list-text">行政办公（总裁办行政部）</div> -->
+<!-- 		</li> -->
+<!-- 		<li> -->
+<!-- 				<div class="hui-list-icons"> -->
+<!-- 					<img src="/dingdingweb/HUI/img/index/form.png" style="width: 25px; height: 25px"> -->
+<!-- 				</div> -->
+<!-- 				<div class="hui-list-text" id="contract" onclick="senduserjson()">	 -->
+<!-- 					<span>合同管理（总裁办合同管理部） </span>              		  -->
+<!-- 				</div> -->
+<!-- 		</li> -->
+<!-- 		<li> -->
+<!-- 				<div class="hui-list-icons"> -->
+<!-- 					<img src="/dingdingweb/HUI/img/index/form.png" style="width: 25px; height: 25px"> -->
+<!-- 				</div> -->
+<!-- 				<div class="hui-list-text" onclick="chuanzhi()">	 -->
+<!-- 					<span>人力服务（人力资源中心） </span>              		  -->
+<!-- 				</div> -->
+<!-- 		</li> -->
+
+<!-- </ul> -->
+<!-- </div> -->
+
+<div class="hui-wrap">
+	    <div style="padding:10px;">
+			<div class="hui-speed-dial">
+				<ul></ul>
+			</div>
+	    </div>
+</div>
+
+
+<script type="text/javascript">
+	var icons = ["hui-icons-tab","hui-icons-swipe","hui-icons-picker","hui-icons-forum"];
+	
+
+	
+	var html  = '';
+	
+		html += '<li>'+
+		'<div class="hui-speed-dial-icons" onclick="">'+
+	        '<span class="hui-icons '+icons[0]+'"></span>'+
+	    '</div>'+
+	    '<div class="hui-speed-dial-text">IT服务(总裁办IT信息部)</div>';
+		'</li>';
+		hui('.hui-speed-dial ul').html(html);
+	
+		html += '<li>'+
+			'<div class="hui-speed-dial-icons" onclick="send2Office()">'+
+	            '<span class="hui-icons '+icons[1]+'"></span>'+
+	        '</div>'+
+	        '<div class="hui-speed-dial-text">行政办公(总裁办行政部)</div>';
+			'</li>';
+		hui('.hui-speed-dial ul').html(html);
+		
+		html += '<li>'+
+		'<div class="hui-speed-dial-icons" onclick="send2Contract()">'+
+            '<span class="hui-icons '+icons[2]+'"></span>'+
+        '</div>'+
+        '<div class="hui-speed-dial-text">合同管理(总裁办合同管理部)</div>';
+		'</li>';
+		hui('.hui-speed-dial ul').html(html);
+		
+		html += '<li>'+
+		'<div class="hui-speed-dial-icons" onclick="to2()">'+
+            '<span class="hui-icons '+icons[3]+'"></span>'+
+        '</div>'+
+        '<div class="hui-speed-dial-text">人力服务(人力资源中心)</div>';
+		'</li>';
+		hui('.hui-speed-dial ul').html(html);
+	
+</script>
+
+	<script type="text/javascript">
+	hui('#contract').click(function(){
+	    hui.loading('数据加载中');
+	    setTimeout(function(){hui.loading(false, true);}, 2000);
+	});
+	hui('#c').click(function(){
+	    if(!window.plus){
+	        hui.alert('只能在h5+环境下运行！');
+	        return false;
+	    }
+	    hui.h5Loading(false, '加载中...',{round:2, padding:'20px', textalign:'right'});
+	    setTimeout(function(){hui.h5Loading(true);}, 2000);
+	});
+</script>
+
+</body>
+
+</html>

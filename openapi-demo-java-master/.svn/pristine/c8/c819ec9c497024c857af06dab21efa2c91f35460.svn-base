@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Hisign.dao.ContractDao">
+	<select id="Insert" resultType="Hisign.entity.ContractInfor" parameterType="Hisign.entity.ContractInfor">
+	<!-- 		select * from  ${tablename}; -->
+	insert into contract_success
+	(dcnumber,borrowid,borrowname,borrowde,link_contractName,link_reason,link_abacktime,link_spid,link_spname,link_spopinions,link_spdate,link_abdate,link_rdate,link_note,link_evaluation)
+	values(#{dcnumber},#{borrowid},#{borrowname},#{borrowde},#{link_contractName},#{link_reason},#{link_abacktime},#{link_spid},#{link_spname},#{link_spopinions},#{link_spdate},#{link_abdate},#{link_rdate},#{link_note},#{link_evaluation});
+	</select>
+	<select id="search" resultType="Hisign.entity.ContractInfor" parameterType = "java.lang.String">
+	select * from contract_success where borrowname=#{searchkey} or
+	link_abdate=#{searchkey} order by dcnumber desc
+	</select>
+	<select id="auditsearch" resultType="Hisign.entity.ContractInfor" parameterType = "java.lang.String">
+	select * from contract_success where link_spname=#{searchkey} order by dcnumber desc
+	
+	</select>
+	
+	<select id="audittobase" resultType="Hisign.entity.ContractInfor" parameterType="Hisign.entity.ContractInfor">
+<!-- 		<if test="audittype=='success'"> -->
+<!-- 			insert into contract_success (dcnumber,borrowid,borrowname,borrowde,link_contractName,link_reason,link_abacktime,link_spid,link_spname,link_spopinions,link_spdate,link_abdate,audittype,link_rdate,link_note,link_evaluation,overdate) values(#{dcnumber},#{borrowid},#{borrowname},#{borrowde},#{link_contractName},#{link_reason},#{link_abacktime},#{link_spid},#{link_spname},#{link_spopinions},#{link_spdate},#{link_abdate},#{audittype},#{link_rdate},#{link_note},#{link_evaluation},now());	 -->
+	update contract_success set
+	borrowid=#{borrowid},borrowname=#{borrowname},borrowde=#{borrowde},link_contractName=#{link_contractName},link_reason=#{link_reason},link_abacktime=#{link_abacktime},link_spid=#{link_spid},link_spname=#{link_spname},link_spopinions=#{link_spopinions},link_spdate=#{link_spdate},link_abdate=#{link_abdate},audittype=#{audittype},link_rdate=#{link_rdate},link_note=#{link_note},link_evaluation=#{link_evaluation}
+	where dcnumber=#{dcnumber};
+		
+<!-- 		</if> -->
+<!-- 		<if test="audittype=='fail'"> -->
+<!-- 			insert into contract_fail (dcnumber,borrowid,borrowname,borrowde,link_contractName,link_reason,link_abacktime,link_spid,link_spname,link_spopinions,link_spdate,link_abdate,audittype,link_rdate,link_note,link_evaluation,overdate) values(#{dcnumber},#{borrowid},#{borrowname},#{borrowde},#{link_contractName},#{link_reason},#{link_abacktime},#{link_spid},#{link_spname},#{link_spopinions},#{link_spdate},#{link_abdate},#{audittype},#{link_rdate},#{link_note},#{link_evaluation},now());	 -->
+<!-- 		</if> -->
+	
+	</select>
+	
+	<select id="applysearch" resultType="Hisign.entity.ContractInfor" parameterType="java.lang.String">
+	select * from contract_success where borrowname=#{searchkey} and
+	link_evaluation is NULL order by dcnumber desc
+	</select>
+	<select id ="applytobase" resultType="Hisign.entity.ContractInfor" parameterType="Hisign.entity.ContractInfor">
+	update contract_success set
+	link_note=#{link_note},link_evaluation=#{link_evaluation}
+	where dcnumber=#{dcnumber};
+	</select>
+	
+	<select id="backsearch" resultType="Hisign.entity.ContractInfor" parameterType="java.lang.String">
+	select * from contract_success where borrowname=#{searchkey} and
+	link_rdate is NULL and link_evaluation is not NULL and audittype is not
+	NULL order by dcnumber desc
+	</select>
+	<select id ="backtobase" resultType="Hisign.entity.ContractInfor" parameterType="Hisign.entity.ContractInfor">
+	update contract_success set link_rdate=now() where dcnumber=#{dcnumber};
+	</select>
+	
+	<select id="finalsearch" resultType="Hisign.entity.ContractInfor" parameterType="java.lang.String">
+	select * from contract_success where borrowname=#{searchkey} and
+	link_rdate is not NULL and overdate is NULL order by dcnumber desc
+	
+	</select>
+	<select id="finaltobase" resultType="Hisign.entity.ContractInfor" parameterType="Hisign.entity.ContractInfor">
+	update contract_success set overdate=now() where dcnumber=#{dcnumber};
+		
+	</select>
+	
+</mapper>

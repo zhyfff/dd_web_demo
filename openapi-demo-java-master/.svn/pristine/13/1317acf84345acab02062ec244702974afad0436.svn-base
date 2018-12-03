@@ -1,0 +1,135 @@
+<%@ page language="java" import="java.util.*" contentType="text/html;charset=utf-8"%>
+<%@include file="/top.jsp"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<base href="<%=basePath%>">
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+<meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="yes" name="apple-touch-fullscreen" />    
+    <meta name="data-spm" content="a215s" />
+    <meta content="telephone=no,email=no" name="format-detection" />    
+    <meta content="fullscreen=yes,preventMove=no" name="ML-Config" />
+    <link href="icon114-114.png" rel="apple-touch-icon-precomposed">
+    <link href="icon.png" rel="Shortcut Icon" type="image/x-icon" />
+<title>查询快递通知</title>
+</head>
+<body>
+	<header class="header">
+		<div class="hui-list" align="center">
+			<c:forEach items="${userinfoList}" var="u" varStatus="abc">
+				<div  class="hui-list-icons" style="width:110px; height:80px;">
+					<img id="userImg" alt="头像" src="${u.avatar}" style="width:66px; margin:0px; border-radius:50%;">
+				</div>
+				<div align="center" style="height:auto; height:40px; padding-bottom:8px;">
+					欢迎您 : ${u.name}
+				</div>
+				<input  type="hidden" id = "info" value="${userjson}">
+				
+			</c:forEach>
+		</div>
+		
+		<div class="searchform">
+		<div id="hui-header-sreach">
+		<div id="hui-header-sreach-icon"></div>
+		<form name="fs" action="/Office/SearchCourierNotice" method="post" class="hui-header-sreach">
+			<input name="searchkey" type="search" placeholder="请输入" class="span3">
+			<input type="hidden" name="info" value="${userjson}">
+<!-- 			<input id="s" type="submit" class="btn btn-primary" value="查询"> -->
+		</form>
+		</div>
+	</div>
+		
+	</header>
+	
+	<div class="hui-wrap">
+		<c:forEach items="${courierlist}" var="s" varStatus="abc">
+		<div class="hui-accordion">
+				<div class="hui-accordion-title">单 据 号:${s.dcnumber}-
+					<c:choose>
+						<c:when test="${s.lq!=null&&s.overtime!=null}">
+							已领取并确认收到
+						</c:when>
+						<c:when test="${s.lq!=null&&s.overtime eq null}">
+							已领取未确认收到
+						</c:when>
+						<c:when test="${s.lq eq null}">
+							未领取
+						</c:when>
+						
+					</c:choose>
+				</div>
+				<div class="hui-accordion-content hui-list">
+					<ul>
+						<li>
+							<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/form.png" /></div>
+			        		<div class="hui-list-text">
+			        			单 据 号：${s.dcnumber}<div class="hui-list-info hui-icons hui-icons-right"></div>
+			        		</div>
+		        		</li>
+		        		
+		        		<li>
+			        		<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/select.png" /></div>
+			        		<div class="hui-list-text">
+			        			收件人：${s.recipients}<div class="hui-list-info hui-icons hui-icons-right"></div>
+			        		</div>
+		        		</li>
+		        		<li>
+			        		<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/select.png" /></div>
+			        		<div class="hui-list-text">
+			        			快递号：${s.express_no}<div class="hui-list-info hui-icons hui-icons-right"></div>
+			        		</div>
+		        		</li>
+		        		<li>
+			        		<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/select.png" /></div>
+			        		<div class="hui-list-text">
+			        			通知时间：${s.notice_time}<div class="hui-list-info hui-icons hui-icons-right"></div>
+			        		</div>
+		        		</li>
+		        		<li>
+			        		<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/select.png" /></div>
+			        		<div class="hui-list-text">
+			        			是否到付：${s.pay_type}<div class="hui-list-info hui-icons hui-icons-right"></div>
+			        		</div>
+		        		</li>
+		        		<li>
+			        		<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/select.png" /></div>
+			        		<div class="hui-list-text">
+			        			领取人：${s.lq}<div class="hui-list-info hui-icons hui-icons-right"></div>
+			        		</div>
+		        		</li>
+		        		<li>
+			        		<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/select.png" /></div>
+			        		<div class="hui-list-text">
+			        			快递公司：${s.express}<div class="hui-list-info hui-icons hui-icons-right"></div>
+			        		</div>
+		        		</li>
+		        		<li>
+			        		<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/select.png" /></div>
+			        		<div class="hui-list-text">
+			        			备注：${s.note}<div class="hui-list-info hui-icons hui-icons-right"></div>
+			        		</div>
+		        		</li>
+		        		<li>
+			        		<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/select.png" /></div>
+			        		<div class="hui-list-text">
+			        			评价：${s.evaluation}<div class="hui-list-info hui-icons hui-icons-right"></div>
+			        		</div>
+		        		</li>
+		        		<li>
+			        		<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/select.png" /></div>
+			        		<div class="hui-list-text">
+			        			结束时间：${s.overtime}<div class="hui-list-info hui-icons hui-icons-right"></div>
+			        		</div>
+		        		</li>
+					</ul>
+				</div>
+		</div>
+		</c:forEach>
+	</div>
+	
+</body>
+</html>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Hisign.dao.LoginDao">
+
+	<select id="searchUser" resultType="string">
+		select count(*) from api_task;
+	</select>
+	
+	<select id="managerSearch" parameterType="String" resultType="java.util.HashMap">
+<!-- 		select * from  ${tablename}; -->
+		select loginName,password from User_Jurisdiction where loginName=#{loginName} and password=#{password};
+	</select>
+</mapper>

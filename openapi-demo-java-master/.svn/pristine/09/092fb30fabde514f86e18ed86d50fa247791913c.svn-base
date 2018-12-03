@@ -1,0 +1,167 @@
+<%@ page language="java" import="java.util.*" contentType="text/html;charset=utf-8"%>
+<%@include file="/top.jsp"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<base href="<%=basePath%>">
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+<meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="yes" name="apple-touch-fullscreen" />    
+    <meta name="data-spm" content="a215s" />
+    <meta content="telephone=no,email=no" name="format-detection" />    
+    <meta content="fullscreen=yes,preventMove=no" name="ML-Config" />
+    <link href="icon114-114.png" rel="apple-touch-icon-precomposed">
+    <link href="icon.png" rel="Shortcut Icon" type="image/x-icon" />
+<title>领取人登记</title>
+</head>
+<body>
+	<header class="header">
+		<div class="hui-list" align="center">
+			<c:forEach items="${userinfoList}" var="u" varStatus="abc">
+				<div  class="hui-list-icons" style="width:110px; height:80px;">
+					<img id="userImg" alt="头像" src="${u.avatar}" style="width:66px; margin:0px; border-radius:50%;">
+				</div>
+				<div align="center" style="height:auto; height:40px; padding-bottom:8px;">
+					欢迎您 : ${u.name}
+				</div>
+				
+					<input  type="hidden" id = "info" value="${userjson}">
+				
+			</c:forEach>
+		</div>
+	</header>
+	
+	<div class="hui-wrap">
+	<c:forEach items="${courierlist}" var="s" varStatus="abc">
+		<div class="hui-accordion">
+				<div class="hui-accordion-title">收件人:${s.recipients}-
+					<c:choose>
+						<c:when test="${s.lq!=null&&s.evaluation eq null}">
+							已领取需确认
+						</c:when>
+						<c:when test="${s.lq eq null}">
+							未领取
+						</c:when>
+						<c:when test="${s.evaluation !=null&&s.overtime !=null}">
+							已领取
+						</c:when>	
+					</c:choose>
+				
+				</div>
+				<div class="hui-accordion-content hui-list">
+					<ul>
+						<li>
+							<div class="hui-list-icons">
+									<img src="/dingdingweb/HUI/img/index/number.png" />
+							</div>
+							<div class="hui-list-text">
+									<span id="dcnumber">单据号:${s.dcnumber}</span>
+							</div>
+						</li>
+						
+						<li>
+							<div class="hui-list-icons">
+									<img src="/dingdingweb/HUI/img/index/number.png" />
+							</div>
+							<div class="hui-list-text">
+									<span id="recipients">收件人:${s.recipients}</span>
+							</div>
+						</li>
+						
+						<li>
+							<div class="hui-list-icons">
+									<img src="/dingdingweb/HUI/img/index/number.png" />
+							</div>
+							<div class="hui-list-text">
+									<span id="express_no">快递号：${s.express_no}</span>
+							</div>
+						</li>
+						<li>
+							<div class="hui-list-icons">
+									<img src="/dingdingweb/HUI/img/index/number.png" />
+							</div>
+							<div class="hui-list-text">
+									<span id="notice_time">通知时间：${s.notice_time}</span>
+							</div>
+						</li>
+						<li>
+							<div class="hui-list-icons">
+									<img src="/dingdingweb/HUI/img/index/number.png" />
+							</div>
+							<div class="hui-list-text">
+									<span id="pay_type">是否到付：${s.pay_type}</span>
+							</div>
+						</li>
+						
+						<li>
+							<div class="hui-list-icons">
+									<img src="/dingdingweb/HUI/img/index/number.png" />
+							</div>
+							<div class="hui-list-text">
+									<span id="express">快递公司：${s.express}</span>
+							</div>
+						</li>
+						
+						<c:choose>
+							<c:when test="${s.lq != null}">
+								<li>
+							<div class="hui-list-icons">
+									<img src="/dingdingweb/HUI/img/index/number.png" />
+							</div>
+							<div class="hui-list-text">
+									<span id="lq">领取人：${s.lq}</span>
+							</div>
+						</li>
+							</c:when>
+						</c:choose>
+						
+						
+						<form style="padding: 28px 10px;" id="relq"  class="hui-form" action="/Office/SaveRelq" method="post">
+						
+						<input type="hidden" id="dcnumber" name="dcnumber" value="${s.dcnumber}">
+						<input type="hidden" id ="recipients" name="recipients" value="${s.recipients}">
+						<input type="hidden" id ="express-no" name="express-no" value="${s.express_no}" >
+						<input type="hidden" id="notice-time" name="notice-time" value="${s.notice_time}">
+						<input type="hidden" id="radio" name="radio" value="${s.pay_type}">
+						<input type="hidden" id="notice-word" name="notice-word" value="${s.notice_word}">
+						<input type="hidden" id="express" name="express" value="${s.express}">
+						
+						<c:choose>
+							<c:when test="${s.lq eq null}">
+								<li>
+									<div class="hui-list-icons">
+											<img src="/dingdingweb/HUI/img/index/number.png" />
+									</div>
+									<div class="hui-form-items">
+									<div class="hui-form-items-title">领取人</div>
+									<c:choose>
+										<c:when test="${s.lq eq null}">
+											<input type="text" id="lq" name="lq" class="hui-input">
+										</c:when>
+										<c:otherwise>
+											<input type="text" id="lq" name="lq" value="${s.lq}">
+										</c:otherwise>
+									</c:choose>
+										
+									</div>
+								</li>
+								
+						
+								<div style="padding:15px 30px 50px 10px; ">
+								<div class="hui-form-items-title"></div>
+								<input type = "submit" id = "submit" value ="确认登记领取人" class="hui-button hui-primary hui-fr" >
+								</div>
+							</c:when>
+						</c:choose>
+						
+						</form>
+					</ul>
+				</div>
+		</div>
+	</c:forEach>
+	</div>
+</body>
+</html>

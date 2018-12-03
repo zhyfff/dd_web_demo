@@ -1,0 +1,193 @@
+<%@ page language="java" import="java.util.*" contentType="text/html;charset=utf-8"%>
+<%@include file="/top.jsp"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+   
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<base href="<%=basePath%>">
+<meta http-equiv="Content-Type" content="text/html; charset=charset=utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+<meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="yes" name="apple-touch-fullscreen" />    
+    <meta name="data-spm" content="a215s" />
+    <meta content="telephone=no,email=no" name="format-detection" />    
+    <meta content="fullscreen=yes,preventMove=no" name="ML-Config" />
+    <link href="icon114-114.png" rel="apple-touch-icon-precomposed">
+    <link href="icon.png" rel="Shortcut Icon" type="image/x-icon" />
+<title>我的审批</title>
+
+</head>
+<body>
+<header class="header">
+<div class="hui-list" align="center">
+		<c:forEach items="${userinfoList}" var="u" varStatus="abc">
+			<div  class="hui-list-icons" style="width:110px; height:80px;">
+				<img id="userImg" alt="头像" src="${u.avatar}" style="width:66px; margin:0px; border-radius:50%;">
+			</div>
+			<div align="center" style="height:auto; height:40px; padding-bottom:8px;">
+				欢迎您 : ${u.name}
+			</div>
+			<input  type="hidden" id = "info" value="${userjson}">
+		</c:forEach>
+	</div>
+</header>
+
+		
+		
+		
+	<div class="hui-wrap">
+		<c:forEach items="${contractlist}" var="s" varStatus="abc">
+			
+				<form action="/Contract/auditToBase" method="post" class="hui-form">
+				<div class="hui-accordion">
+					<div class="hui-accordion-title">单 据 号：${s.dcnumber}-审批状态-	
+						<c:choose>
+						     <c:when test="${s.link_rdate != null&&s.overdate  != null&&s.audittype eq '是'}">
+					        		已确认归还
+						    </c:when>
+						     <c:when test="${s.audittype eq '是'&&s.link_rdate eq null&&s.link_evaluation eq null}">
+						        	审核通过
+						    </c:when>
+	   					    <c:when test="${s.audittype eq 'fail'}">
+						        	已拒绝
+						    </c:when>
+						    <c:when test="${s.audittype eq null&&s.link_rdate eq null}">
+						    		请审核
+						    </c:when>
+						     <c:when test="${s.link_rdate eq null&&s.audittype eq '是'&&s.link_evaluation!=null}">
+						    		未归还
+						    </c:when>
+						     <c:when test="${s.audittype eq '是'&&s.link_rdate != null &&s.overdate eq null}">
+						    		已归还未确认
+						    </c:when>
+						</c:choose>
+					</div>
+					<div class="hui-accordion-content hui-list">
+					<ul>	
+					<li>
+									<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/number.png" /></div>
+									<div class="hui-form-items">
+									<div class="hui-form-items-title">单 据 号</div>
+									<input type="text" readonly="readonly"
+											value="${s.dcnumber}"   id="dcnumber" name="dcnumber" class="hui-input">
+									</div>
+								</li>
+								<li>
+									<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/number.png" /></div>
+									<div class="hui-form-items">
+									<div class="hui-form-items-title">借用人员工号</div>
+									<input type="text" readonly="readonly"
+											value="${s.borrowid}"   id="borrowid" name="borrowid" class="hui-input">
+											</div>
+								</li>
+								<li>
+									<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/number.png" /></div>
+									<div class="hui-form-items">
+									<div class="hui-form-items-title">借用人员姓名</div>
+									<input type="text" readonly="readonly"
+											value="${s.borrowname}"   id="borrowname" name="borrowname" class="hui-input">
+											</div>
+								</li>
+								<li>
+									<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/number.png" /></div>
+									<div class="hui-form-items">
+									<div class="hui-form-items-title">借用人员部门</div>
+									<input type="text" readonly="readonly"
+											value="${s.borrowde}"   id="borrowde" name="borrowde" class="hui-input">
+											</div>
+								</li>
+								<li>
+									<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/number.png" /></div>
+									<div class="hui-form-items">
+									<div class="hui-form-items-title">借 用 合 同 名</div>
+									<input type="text" readonly="readonly"
+											value="${s.link_contractName}"   id="link_contractName" name="link_contractName" class="hui-input">
+											</div>
+								</li>
+								<li>
+									<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/number.png" /></div>
+									<div class="hui-form-items">
+									<div class="hui-form-items-title">借 用 事 由</div>
+									<input type="text" readonly="readonly"
+											value="${s.link_reason}"   id="link_reason" name="link_reason" class="hui-input">
+											</div>
+								</li>
+								<li>
+									<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/number.png" /></div>
+									<div class="hui-form-items">
+									<div class="hui-form-items-title">预计还回时间</div>
+									<input type="text" readonly="readonly"
+											value="${s.link_abacktime}"   id="link_abacktime" name="link_abacktime" class="hui-input">
+											</div>
+								</li>
+								<li>
+									<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/number.png" /></div>
+									<div class="hui-form-items">
+									<div class="hui-form-items-title">审批人员工号</div>
+									<input type="text" value="${s.link_spid}"   id="link_spid" name="link_spid" readonly="readonly" class="hui-input">
+									</div>
+								</li>
+								<li>
+									<div class="hui-list-icons"><img src="/dingdingweb/HUI/img/index/number.png" /></div>
+									<div class="hui-form-items">
+									<div class="hui-form-items-title">审批人员姓名</div>
+									<input type="text" value="${s.link_spname}"   id="link_spname" name="link_spname" readonly="readonly" class="hui-input">
+									</div>
+								</li>
+						<c:choose>
+	   					    <c:when test="${s.audittype eq null}">
+								
+								
+									<div class="hui-form-items">
+									<div class="hui-form-items-title">审批意见</div>
+<!-- 									<div class="hui-list-text">审批意见</div> -->
+									<input  type="text" class="hui-input" id="link_spopinions"  name="link_spopinions" required="required" checkType="string" checkData="6,30" checkMsg="审批意见应为6-30个字符"><!-- 	审批意见 -->
+									</div>
+								
+									
+									<div class="hui-form-items">				
+									<div class="hui-form-items-title">审批时间</div>
+									<input type="date" id="link_spdate" name="link_spdate" required="required" class="hui-input"><!-- 审批时间 -->
+									</div>	
+									
+									<div class="hui-form-items">						
+									<div class="hui-form-items-title">实际借出时间</div>
+									<input type="date" id="link_abdate" name="link_abdate" required="required" class="hui-input">
+									</div>	
+									
+								
+								  
+<!-- 								<div class="hui-form-items"> -->
+<!-- 								<div class="hui-form-items-title">是否同意</div> -->
+<!-- 									<div class="hui-form-radios"> -->
+<!-- 										<input type="radio" id="success" name="radio" value="success" style="margin-left:40px; margin-top: 10px;"><label for="success" >同意</label> -->
+<!-- 										<input type="radio" id="fail" name="radio" value="fail" style="margin-right:40px; margin-top: 10px;"> <label for="fail">拒绝</label> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+									<div class="hui-form-items">
+									<div class="hui-form-items-title">是否同意</div>
+									<select id="radio" name="radio" class="radio" >
+										<option value="是">是</option>
+										<option value="否">否</option>
+									</select>
+									</div>
+								
+									<div style="padding: 10px 30px 60px 10px;">
+										<div class="hui-form-items-title"></div>
+										<input type="submit" id="submit" name="submit" value="提交审核"
+											class="hui-button hui-primary hui-fr">
+									</div>
+
+								</c:when>
+							</c:choose>
+						</ul>
+					</div>
+					</div>
+				
+				</form>
+		</c:forEach>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Hisign.dao.OfficeDao">
+	<select id="SaveCourierNotice" resultType="Hisign.entity.CourierInfor" parameterType="Hisign.entity.CourierInfor">
+	insert into office_courier
+	(dcnumber,recipients,express_no,notice_time,pay_type,notice_word,lq,express)
+	values(#{dcnumber},#{recipients},#{express_no},#{notice_time},#{pay_type},#{notice_word},#{lq},#{express});
+	</select>
+	<select id="SelectCourierNotice" resultType="Hisign.entity.CourierInfor" parameterType="java.lang.String">
+		select * from office_courier where recipients=#{searchkey} or
+		notice_time=#{searchkey} order by dcnumber desc
+	</select>
+
+	<select id="SearchRelq" resultType="Hisign.entity.CourierInfor">
+		select * from office_courier order by dcnumber desc
+	</select>
+	
+	<select id="SaverRelq" resultType="Hisign.entity.CourierInfor" parameterType="Hisign.entity.CourierInfor">
+		update office_courier set lq=#{lq} where dcnumber=#{dcnumber};
+	</select>
+	
+	<select id="MyCourier" resultType="Hisign.entity.CourierInfor" parameterType="java.lang.String">
+		select * from office_courier where recipients=#{searchkey} order by dcnumber desc
+		
+	</select>
+
+	<select id="SaveMyCourier" resultType="Hisign.entity.CourierInfor" parameterType="Hisign.entity.CourierInfor">
+		update office_courier set note =#{note}, evaluation=#{evaluation} , overtime=now() where dcnumber=#{dcnumber};
+	</select>
+	
+	
+<!-- 	************************************************************************************* -->
+	<select id="getcarlist" resultType="Hisign.entity.Car">
+	select * from office_carlist
+	</select>
+
+
+	<select id="SaveApplyCar" resultType="Hisign.entity.ApplyCarInfor" parameterType="Hisign.entity.ApplyCarInfor">
+	insert into office_applycar
+	(dcnumber,jobnumber,name,borrowde,apply_time,use_time,apply_reason,pnum,driver,audit_name)
+	values(#{dcnumber},#{jobnumber},#{name},#{borrowde},#{apply_time},#{use_time},#{apply_reason},#{pnum},#{driver},#{audit_name});
+	</select>
+	
+	<select id="selectApplyCar" resultType="Hisign.entity.ApplyCarInfor" parameterType="java.lang.String">
+	select * from office_applycar where audit_name=#{searchkey} order by dcnumber desc
+	</select>
+	
+	<select id="SaveApplyCarAudit" resultType="Hisign.entity.ApplyCarInfor"
+	parameterType="Hisign.entity.ApplyCarInfor">
+	update office_applycar set
+	audit_opinion=#{audit_opinion},audit_time=#{audit_time},note=#{note},audit_type=#{radio}
+	where dcnumber=#{dcnumber};
+	</select>
+	<select id="selectMyApplyCar" resultType="Hisign.entity.ApplyCarInfor"
+	parameterType="java.lang.String">
+		select * from office_applycar where name=#{searchkey} order by dcnumber desc
+	</select>
+	<select id="SaveApplyCarAfterEv" resultType="Hisign.entity.ApplyCarInfor"
+	parameterType="Hisign.entity.ApplyCarInfor">
+		update office_applycar set evaluation=#{evaluation} where dcnumber=#{dcnumber};
+		
+	</select>
+	<select id="selectMyCar" resultType="Hisign.entity.ApplyCarInfor"
+	parameterType="java.lang.String">
+		select * from office_applycar where name=#{searchkey} and evaluation is null and audit_type ='是' order by dcnumber desc
+	
+	</select>
+	<select id="sureBackApplyCar" resultType="Hisign.entity.ApplyCarInfor"
+	parameterType="java.lang.String">
+		select * from office_applycar where audit_name=#{searchkey} and evaluation is not null and audit_type ='是' order by dcnumber desc	
+	</select>
+	
+	<select id="SaveApplyCarBack" resultType="Hisign.entity.ApplyCarInfor"
+	parameterType="Hisign.entity.ApplyCarInfor">
+		update office_applycar set over_time=now() where dcnumber=#{dcnumber};
+	</select>
+	
+	<select id="SelectApplyCarList" resultType="Hisign.entity.ApplyCarInfor"
+	parameterType="java.lang.String">
+		select * from office_applycar where name = #{searchkey} or borrowde =#{searchkey} or apply_time=#{searchkey} order by dcnumber desc
+	</select>
+	
+	<select id="selectApplyCardetail" resultType="Hisign.entity.ApplyCarInfor"
+	parameterType="java.lang.String">
+		select * from office_applycar where dcnumber = #{searchkey};
+	</select>
+<!-- 	******************************************************************************************** -->
+	<select id="SaveApplyBusinessCard" resultType="Hisign.entity.BusinessCardInfor"
+	parameterType="Hisign.entity.BusinessCardInfor">
+	insert into office_businesscard
+	(dcnumber,jobnumber,name,borrowde,email,company,web,customertel,num,audit_name)
+	values
+	(#{dcnumber},#{jobnumber},#{name},#{borrowde},#{email},#{company},#{web},#{customertel},#{num},#{audit_name});
+	</select>
+	
+	<select id="selectMyAuditBusinessCard" resultType="Hisign.entity.BusinessCardInfor"
+	parameterType="java.lang.String">
+		select * from office_businesscard where audit_name=#{audit_name} order by dcnumber desc
+	</select>
+	<select id="send2DeskBusinessCard" resultType="Hisign.entity.BusinessCardInfor"
+	parameterType="Hisign.entity.BusinessCardInfor">
+	update office_businesscard set
+	audit_opinion=#{audit_opinion},audit_time=#{audit_time},audit_type=#{audit_type},desk=#{desk}
+	where dcnumber=#{dcnumber};
+	</select>
+	
+	<select id="selectNeedCreateBusinessCard" resultType="Hisign.entity.BusinessCardInfor"
+	parameterType="java.lang.String">
+	select * from office_businesscard where desk=#{desk} and audit_opinion is not null and audit_type is not null order by dcnumber desc
+	</select>
+	
+	<select id="sendCreateMessage" resultType="Hisign.entity.BusinessCardInfor"
+	parameterType="Hisign.entity.BusinessCardInfor">
+	update office_businesscard set lq=#{lq}, lq_time=#{lq_time} where dcnumber=#{dcnumber};
+	</select>
+	
+	<select id="selectMyBusinessCard" resultType="Hisign.entity.BusinessCardInfor"
+	parameterType="java.lang.String">
+	select * from office_businesscard where name=#{myname} and desk is not null and lq is not null and lq_time is not null order by dcnumber desc 
+	</select>
+	
+	<select id="saveBEvBcard" resultType="Hisign.entity.BusinessCardInfor"
+	parameterType="Hisign.entity.BusinessCardInfor">
+	update office_businesscard set evaluation=#{evaluation},over_time=now() where dcnumber=#{dcnumber};
+	
+	</select>
+	<select id="selectBusinessCard" resultType="Hisign.entity.BusinessCardInfor"
+	parameterType="java.lang.String">
+	select * from office_businesscard where name=#{searchkey} or borrowde=#{searchkey} order by dcnumber desc
+	</select>
+	
+	
+<!-- 	***************************************************************** -->
+
+	<select id="selectAllstamp" resultType="Hisign.entity.StampCertificateInfor">
+	select * from office_maintain_stampcertificate
+	</select>
+	
+	<select id="UpdateStamp"  resultType="Hisign.entity.StampCertificateInfor" parameterType="Hisign.entity.StampCertificateInfor">
+	update office_maintain_stampcertificate set
+	stamp_name=#{stamp_name},manager=#{manager},state=#{state},stamp_company=#{stamp_company},stamp_type=#{stamp_type}
+	where stamp_id=#{stamp_id}
+	</select>
+	<select id="saveApplyStamp" resultType="Hisign.entity.ApplyStampInfor" parameterType="Hisign.entity.ApplyStampInfor">
+	insert into office_applystamp
+	(dcnumber,jobnumber,name,borrowde,stamp_name,stamp_company,stamp_type,manager,apply_time,use_time,reason,back_time,audit_name)
+	values
+	(#{dcnumber},#{jobnumber},#{name},#{borrowde},#{stamp_name},#{stamp_company},#{stamp_type},#{manager},#{apply_time},#{use_time},#{reason},#{back_time},#{audit_name});
+	</select>
+	
+	<select id="selectNeedAdutistamp" resultType="Hisign.entity.ApplyStampInfor"
+	parameterType="java.lang.String">
+	select * from office_applystamp where audit_name=#{audit_name} order by dcnumber desc
+	</select>
+	
+	<select id="toManger" resultType="Hisign.entity.ApplyStampInfor"
+	parameterType="Hisign.entity.ApplyStampInfor">
+	update office_applystamp set audit_opinion=#{audit_opinion},audit_time=#{audit_time},audit_type=#{audit_type} where dcnumber=#{dcnumber}
+	</select>
+	
+	<select id="selectAuditedApplyStamp" resultType="Hisign.entity.ApplyStampInfor" 
+	parameterType="java.lang.String">
+	select * from office_applystamp where manager=#{manager} and audit_type='是' order by dcnumber desc
+	</select>
+	
+	<select id="toIssue" resultType="Hisign.entity.ApplyStampInfor"
+	parameterType="Hisign.entity.ApplyStampInfor">
+	update office_applystamp set issue_type=#{issue_type} where dcnumber=#{dcnumber}
+	</select>
+	
+	<select id="changeStampState"  resultType="Hisign.entity.StampCertificateInfor" 
+	parameterType="Hisign.entity.StampCertificateInfor">
+	update office_maintain_stampcertificate set state=#{state} where stamp_name=#{stamp_name}
+	</select>
+	
+	<select id="selectMyStamp" resultType="Hisign.entity.ApplyStampInfor" 
+	parameterType="java.lang.String">
+	select * from office_applystamp where name=#{userName} order by dcnumber desc
+	</select>
+	
+	<select id="toReturnStamp" resultType="Hisign.entity.ApplyStampInfor" 
+	parameterType="Hisign.entity.ApplyStampInfor">
+	update office_applystamp set evaluation=#{evaluation} where dcnumber=#{dcnumber}
+	</select>
+	
+	<select id="SureReturnStampApply" resultType="Hisign.entity.ApplyStampInfor" 
+	parameterType="Hisign.entity.ApplyStampInfor">
+	update office_applystamp set sureback_time=#{sureback_time},overtime=now() where dcnumber=#{dcnumber}
+	</select>
+	
+	<select id="selectAllStampI" resultType="Hisign.entity.ApplyStampInfor">
+	select * from office_applystamp order by dcnumber desc
+	</select>
+	
+	<select id="searchStampApplyI" resultType="Hisign.entity.ApplyStampInfor" 
+	parameterType="java.lang.String">
+	select * from office_applystamp where name=#{searchkey} or apply_time=#{searchkey} order by dcnumber desc
+	</select>
+</mapper>

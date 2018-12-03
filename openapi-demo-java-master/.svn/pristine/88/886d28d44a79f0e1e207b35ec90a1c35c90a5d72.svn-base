@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Hisign.dao.SaveUserIDao">
+
+
+<select id="saveinfor" resultType="Hisign.entity.UserInfor" parameterType="Hisign.entity.UserInfor">
+	insert into user (active,avatar,department,dingId,email,isAdmin,isBoss,isHide,isLeaderInDepts,jobnumber,mobile,name,orderInDepts,position,remark,senior,tel,userid,workPlace) select
+	#{active},#{avatar},#{department},#{dingId},#{email},#{isAdmin},#{isBoss},#{isHide},#{isLeaderInDepts},#{jobnumber},#{mobile},#{name},#{orderInDepts},#{position},#{remark},#{senior},#{tel},#{userid},#{workPlace}
+	from dual where not exists (select
+	active,avatar,department,dingId,email,isAdmin,isBoss,isHide,isLeaderInDepts,jobnumber,mobile,name,orderInDepts,position,remark,senior,tel,userid,workPlace
+	from user where userid =#{userid} and name=#{name});
+<!-- 	values -->
+<!-- 	(#{active},#{avatar},#{department},#{dingId},#{email},#{isAdmin},#{isBoss},#{isHide},#{isLeaderInDepts},#{jobnumber},#{mobile},#{name},#{orderInDepts},#{position},#{remark},#{senior},#{tel},#{userid},#{workPlace}); -->
+</select>
+
+<select id="updatepwd" resultType="Hisign.entity.UserInfor" parameterType="java.lang.String">
+	update user set pwd=#{pwd} where jobnumber=#{borrowid} and name=#{borrowname};
+</select>
+
+<select id="searchpwd" resultType="java.lang.String" parameterType="java.lang.String">
+	select pwd from user where jobnumber=#{gh} and name=#{name};
+</select>
+
+</mapper>

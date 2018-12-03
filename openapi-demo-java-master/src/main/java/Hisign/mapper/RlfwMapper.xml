@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Hisign.dao.RlfwDao">
+
+	<sql id="RlfwAdd">
+		rlfw_doc_num,rlfw_use_peo_num,rlfw_use_peo_name,rlfw_use_peo_depart,rlfw_use_doc,rlfw_use_desc,rlfw_exp_re_time,rlfw_app_peo_num,rlfw_app_peo_name,rlfw_app_desc,rlfw_app_time,rlfw_act_borr_time,rlfw_act_re_time,rlfw_remark,rlfw_evaluate,rlfw_end_time,rlfw_depar_id,rlfw_doc_state
+	</sql>
+	<insert id="add">
+		insert into rlfw_add
+			(<include refid="RlfwAdd" />)
+		values
+			(#{rlfw_doc_num},#{rlfw_use_peo_num},#{rlfw_use_peo_name},#{rlfw_use_peo_depart},#{rlfw_use_doc},#{rlfw_use_desc},#{rlfw_exp_re_time},#{rlfw_app_peo_num},#{rlfw_app_peo_name},#{rlfw_app_desc},#{rlfw_app_time},#{rlfw_act_borr_time},#{rlfw_act_re_time},#{rlfw_remark},#{rlfw_evaluate},#{rlfw_end_time},#{rlfw_depar_id},#{rlfw_doc_state})
+	</insert>
+
+	<select id="user_select" parameterType="java.lang.String" resultType="Hisign.entity.Rlfw">
+		select * from rlfw_add where rlfw_use_peo_name =#{0} or	rlfw_act_borr_time=#{1}
+	</select>
+
+	<select id="shenpi_select" parameterType="java.lang.String"	resultType="Hisign.entity.Rlfw">
+		select * from rlfw_add where rlfw_app_peo_name =#{rlfw_app_peo_name}
+	</select>
+	
+	<update id="shenpi_jieguo">
+	    update rlfw_add set rlfw_app_peo_num=#{rlfw_app_peo_num},rlfw_app_peo_name=#{rlfw_app_peo_name},rlfw_app_desc=#{rlfw_app_desc},rlfw_app_time=#{rlfw_app_time},rlfw_act_borr_time=#{rlfw_act_borr_time},rlfw_doc_state=#{rlfw_doc_state} where rlfw_doc_num=#{rlfw_doc_num}
+	</update>
+</mapper>

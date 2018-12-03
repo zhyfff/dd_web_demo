@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<%@ page language="java" import="java.util.*"
+	contentType="text/html;charset=utf-8"%>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta content="telephone=no,email=no" name="format-detection">
+<meta name="wap-font-scale" content="no">
+
+<!-- <script type="text/javascript"> -->
+<!-- //在此拿到jsAPI权限验证配置所需要的信息 -->
+<%-- 	var _config =<%=com.alibaba.dingtalk.openapi.demo.auth.AuthHelper.getConfig(request)%>; --%>
+<!-- </script> -->
+<!-- <script type="text/javascript" src="/javascripts/zepto.min.js"></script> -->
+<!-- <script type="text/javascript" src="http://g.alicdn.com/dingding/open-develop/1.6.9/dingtalk.js"> -->
+<!-- </script> -->
+<!-- <script type="text/javascript" src="/javascripts/logger.js"> -->
+<!-- </script> -->
+<!--  <script type="text/javascript" src="/javascripts/demo2.js"> -->
+<!-- //免登相关代码 -->
+<!-- </script> -->
+
+<title>人力服务（人力资源中心）</title>
+</head>
+<body>
+<!-- 		<div align="center"> -->
+<!-- 			<img id="userImg" alt="头像" src="${basePath}dingdingweb/HUI/img/head.png"> -->
+<!-- 		</div> -->
+<!-- 		<div align="center"> -->
+<!-- 			<span> 用户名:</span> -->
+<!-- 			<div id="userName" style="display: inline-block"></div> -->
+<!-- 		</div> -->
+<!-- 		<div align="center"> -->
+<!-- 			<span>您当前在钉钉的<code>userId</code>为: -->
+<!-- 			</span> -->
+<!-- 			<div id="userId" style="display: inline-block"></div> -->
+<!-- 		</div> -->
+	<form action="rlfw/rlfw_select" method="post">
+		<div class="main" style="margin-bottom: 10px;">
+			借用人员姓名:<input type="text" name="rlfw_use_peo_name" id="rlfw_use_peo_name">
+		</div>
+		<div>
+			实际借出时间:<input type="date" name="rlfw_act_borr_time" id="rlfw_act_borr_time">
+		</div>				
+		<button type="submit" class="weui-btn weui-btn_mini weui-btn_primary">查询</button>
+	</form>
+
+
+	<!-- jquery引入 -->
+	<script type="text/javascript" src="../public/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../public/js/jquery/flexible.js"></script>
+	<!-- weui引入 -->
+	<script type="text/javascript" src="../public/js/jquery/weui.js"></script>
+</body>
+</html>

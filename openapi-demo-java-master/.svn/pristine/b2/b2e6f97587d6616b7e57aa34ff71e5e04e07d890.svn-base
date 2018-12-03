@@ -1,0 +1,2 @@
+2018-08-21 13:32:01,215 WARN  org.springframework.web.servlet.PageNotFound:1136 - No mapping found for HTTP request with URI [/Office/StampCertificate/searchapply] in DispatcherServlet with name 'spring-mvc'
+2018-08-21 14:23:35,795 WARN  org.springframework.web.servlet.PageNotFound:1136 - No mapping found for HTTP request with URI [/Office/BusinessCard/apply] in DispatcherServlet with name 'spring-mvc'

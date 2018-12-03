@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<%@ page language="java" import="java.util.*" contentType="text/html;charset=utf-8"%>
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@include file="/top.jsp"%>
+
+<html>
+<head>
+<base href="<%=basePath%>">
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black" name="apple-mobile-web-app-status-bar-style">
+<meta content="telephone=no" name="format-detection"/>
+<meta content="yes" name="apple-touch-fullscreen"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+
+<!-- jquery引入 -->
+	<script type="text/javascript"
+		src="${basePath}dingdingweb/public/js/jquery/jquery.js"></script>
+	<script type="text/javascript"
+		src="${basePath}dingdingweb/public/js/jquery/flexible.js"></script>
+	<link rel="stylesheet" type="text/css" href="${basePath}dingdingweb/HUI/css/hui.css" />
+	<script src="${basePath}dingdingweb/HUI/js/hui.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script type="text/javascript">
+// 		window.onload=function(){
+// 			getDepart();
+// 		}
+
+		$(document).ready(function(){
+// 			$("div[class=borrowde1_] input").each(function() {   
+// 		        var va=$(this).attr("value");
+// 		        getDepart(va);
+
+// 		 	});
+			getDepart1();
+			getDepart2();
+			getcorpUserDetail();
+			
+		})
+		function getDepart1(){
+			$.ajax({
+				url:'Department/getDepartmentdetail?DeptId='+$("#borrowde1_1").attr("value"),
+				type:'GET',
+				dataType:"text",		
+				success:function(data){
+					var depart = JSON.parse(data)		
+					$("#borrowde1").val(depart.name)					
+				},
+				error:function(){
+					alert("不合法的部门id")
+				}
+			})	
+		}	
+		function getDepart2(){
+			$.ajax({
+				url:'Department/getDepartmentdetail?DeptId='+$("#borrowde1_2").attr("value"),
+				type:'GET',
+				dataType:"text",		
+				success:function(data){
+					var depart = JSON.parse(data)		
+					$("#borrowde2").val(depart.name)					
+				},
+				error:function(){
+					alert("不合法的部门id")
+				}
+			})
+			
+			
+		}
+		function getcorpUserDetail(){
+// 			alert($("#borrowde1_2").attr("value"))
+			
+			$.ajax({
+				url:'CorpUserdetailList/getCorpUserdetail?departmentId='+$("#borrowde1_1").attr("value")+'&offset=0&size=10&order=entry_asc',
+				type:'GET',
+				dataType:'text',
+				success:function(data){
+					var corpuser=JSON.parse(data)
+// 					alert(corpuser)
+					var userlist = corpuser.userlist
+					$("#rlfw_app_peo_name").val(userlist[0].name)
+					for (var i = 0; i < userlist.length; i++) {
+						var name = userlist[i].name
+						var isAdmin = userlist[i].isAdmin
+						var jobnumber = userlist[i].jobnumber
+// 						if (isAdmin=="true") {
+// 							alert(name)
+							
+							$("#select_name").append("<option value='"+jobnumber+"'>"+name+"</option>");
+// 						
+// 						}
+					}
+					
+				},
+				error:function(){
+					alert("审批人列表获取失败")
+				}
+
+			})
+			
+		}
+		
+	</script>
+<script language="javascript">
+	function sumbit_sure() {
+		var gnl = confirm("确定要提交?");
+		if (gnl == true) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+</script>
+<title>人力服务（人力资源中心）</title>
+
+</head>
+<body>
+<!-- 	<div align="center"> -->
+<!-- 		<img id="userImg" alt="头像" src="${basePath}dingdingweb/HUI/img/head.png"> -->
+<!-- 	</div> -->
+<!-- 	<div align="center"> -->
+<!-- 		<span> 用户名:</span> -->
+<!-- 		<div id="userName" style="display: inline-block"></div> -->
+<!-- 	</div> -->
+<!-- 	<div align="center"> -->
+<!-- 		<span>您当前在钉钉的<code>userId</code>为: -->
+<!-- 		</span> -->
+<!-- 		<div id="userId" style="display: inline-block"></div> -->
+<!-- 	</div> -->
+	<form action="rlfw/add" method="post" id = "apply_link_form" onsubmit="return sumbit_sure()">
+		<div class="main" style="margin-bottom: 10px;">
+			单据号:<input type="text" name="rlfw_doc_num" id="rlfw_doc_num">
+		</div>
+		<div class="main" style="margin-bottom: 10px;">
+			借用人员工号:<input type="text" name="rlfw_use_peo_num" id="rlfw_use_peo_num" value="${userinfoList.jobnumber}" readonly="readonly">
+		</div>
+		<div class="main" style="margin-bottom: 10px;">
+			借用人员姓名:<input type="text" name="rlfw_use_peo_name" id="rlfw_use_peo_name" value="${userinfoList.name}" readonly="readonly">
+		</div>
+<!-- 		<div class="main" style="margin-bottom: 10px;"> -->
+<%-- 			借用人员部门:<input type="text" name="rlfw_use_peo_depart" id="rlfw_use_peo_depart" value="${userinfoList.department}"> --%>
+<!-- 		</div> -->
+		<div class="borrowde1">	
+			<span>借用人员父部门:</span>&nbsp;&nbsp;<br>
+			<input type ="text" id ="borrowde1" name="borrowde1" readonly="readonly">
+		</div>
+		<div class="borrowde2">
+			<span>借用人员子部门:</span>&nbsp;&nbsp;<br>
+			<input type ="text" id ="borrowde2" name="rlfw_use_peo_depart" readonly="readonly">
+		</div>
+		<div class="main" style="margin-bottom: 10px;">
+			借用文件:<input type="text" name="rlfw_use_doc" id="rlfw_use_doc">
+		</div>
+		<div class="main" style="margin-bottom: 10px;">
+			借用事由:<input type="text" name="rlfw_use_desc" id="rlfw_use_desc">
+		</div>
+		<div class="main" style="margin-bottom: 10px;">
+			预计还回时间:<input type="date" name="rlfw_exp_re_time" id="rlfw_exp_re_time">
+		</div>
+		<div class="hui-form-items">
+			<div class="hui-form-items-title">审批人员姓名</div>
+			<input type="hidden" id="rlfw_app_peo_name" name="rlfw_app_peo_name" readonly="readonly"> <br> 
+			<select id="select_name" name="select_name" onChange="ShowToText(); ">
+
+			</select>
+
+		</div>
+		<input name="rlfw_app_peo_num" id="rlfw_app_peo_num" type="hidden">
+			<input name="rlfw_app_desc" id="rlfw_app_desc" type="hidden">
+			<input name="rlfw_app_time" id="rlfw_app_time" type="hidden">
+			<input name="rlfw_act_borr_time" id="rlfw_act_borr_time" type="hidden">
+			<input name="rlfw_act_re_time" id="rlfw_act_re_time" type="hidden">
+			<input name="rlfw_remark" id="rlfw_remark" type="hidden">
+			<input name="rlfw_evaluate" id="rlfw_evaluate" type="hidden">
+			<input name="rlfw_end_time" id="rlfw_end_time" type="hidden">
+		<div class="borrowde1_">
+			<input type="hidden" id ="borrowde1_1" name="borrowde1_1" value="${department.fid}" readonly="readonly"> 
+			<input type="hidden" id ="borrowde1_2" name="rlfw_depar_id" value="${department.zid}" readonly="readonly">
+		</div>
+		<button type="submit" class="weui-btn weui-btn_mini weui-btn_primary">提交</button>
+	</form>
+</body>
+<script type="text/javascript">
+
+	function ShowToText(){
+		$("#rlfw_app_peo_num").val(document.apply_link_form.select_name.value)
+		document.apply_link_form.rlfw_app_peo_name.value=document.apply_link_form.select_name.options[document.apply_link_form.select_name.selectedIndex].text
+	}
+
+</script>
+</html>

@@ -1,0 +1,32 @@
+package Hisign.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import Hisign.entity.ApplyCarInfor;
+import Hisign.entity.BusinessCardInfor;
+import Hisign.entity.ContractInfor;
+import Hisign.entity.CourierInfor;
+import Hisign.entity.ProcessInfo;
+
+@Repository
+public interface ProcessDao {
+
+	public List<ProcessInfo> seachTodoMessage(@Param("auditname") String auditname);
+	public List<ProcessInfo> seachHavedealMessage(@Param("auditname") String auditname);
+	public List<CourierInfor> getCourierMessageDetail(@Param("dcnumber") String dcnumber,@Param("type") String type);
+	public List<ContractInfor> getContractMessageDetail(@Param("dcnumber") String dcnumber,@Param("type") String type);
+	public List<ApplyCarInfor> getApplyCarMessageDetail(@Param("dcnumber") String dcnumber,@Param("type") String type);
+	public List<BusinessCardInfor> getBusinessCardMessageDetail(@Param("dcnumber") String dcnumber,@Param("type") String type);
+	public String insert(@Param("dcnumber") String dcnumber,@Param("name") String name,@Param("audit_name") String audit_name,@Param("type") String type);
+	public String updateState(@Param("dcnumber") String dcnumber);
+	public int searchPointMsg(@Param("searchkey") String searchkey,@Param("name")String name);//查询待办的信息数量
+	public int MyContractMsgPoint(@Param("name") String name);//查询我借用的合同数量
+	public int ConfirmToreceiveCourierPointMsg(@Param("name") String name);//查询需要领取确认的快递信息数量
+	public int getMyCarPointMsg(@Param("name") String name);//查询我的车辆借用信息数量
+	public int getMyBusinessCardPointMsg(@Param("name") String name);//查询我的名片制作信息数量
+	public int getCreateCardPointMsg(@Param("name") String name);//查询需要制作的名片信息数量
+	
+}

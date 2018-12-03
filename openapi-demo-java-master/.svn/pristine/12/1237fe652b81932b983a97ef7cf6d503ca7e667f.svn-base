@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="Hisign.dao.ProcessDao">
+	<select id="seachTodoMessage" resultType="Hisign.entity.ProcessInfo" parameterType="java.lang.String">
+	select * from process where (name= #{auditname} or audit_name = #{auditname} or manager=#{auditname})and state='待办' order by insert_time desc
+	 </select>
+	 
+	 <select id="seachHavedealMessage" resultType="Hisign.entity.ProcessInfo" parameterType="java.lang.String">
+	 select * from process where (name= #{auditname} or audit_name = #{auditname} or manager=#{auditname} )and state='已处理' order by insert_time desc
+	 </select>
+	 
+	 <select id="getContractMessageDetail" resultType="Hisign.entity.ContractInfor" parameterType="java.lang.String">
+	 select * from contract_success where dcnumber=#{dcnumber}
+	 </select>
+	 
+	 <select id="getCourierMessageDetail" resultType="Hisign.entity.CourierInfor"  parameterType="java.lang.String">
+	 select * from office_courier where dcnumber=#{dcnumber}
+	 </select>
+	 
+	 <select id="getApplyCarMessageDetail" resultType="Hisign.entity.ApplyCarInfor" parameterType="java.lang.String">
+	 select * from office_applycar where dcnumber=#{dcnumber}
+	 </select>
+	 
+	 <select id="getBusinessCardMessageDetail" resultType="Hisign.entity.BusinessCardInfor" parameterType="java.lang.String">
+	 select * from office_businesscard where dcnumber=#{dcnumber}
+	 </select>
+	 
+	 <select id="getApplyStampMessageDetail" resultType="Hisign.entity.ApplyStampInfor" parameterType="java.lang.String">
+	 select * from office_applystamp where dcnumber=#{dcnumber}
+	 </select>
+	 
+	 <select id="getApplyHrMessageDetail" resultType="Hisign.entity.HrContractInfor" parameterType="java.lang.String" >
+	 select * from hr_contract where dcnumber=#{dcnumber}
+	 </select>
+	 
+	 <select id="getApplyConsumabkePurInforMessageDetail" resultType="Hisign.entity.ConsumablePurInfor" parameterType="java.lang.String">
+	 select * from it_conpur where dcnumber=#{dcnumber}
+	 </select>
+	 
+	 <select id="getApplyEquipmentBorrowInforMessageDetail" resultType="Hisign.entity.EquipBorrowInfor"  parameterType="java.lang.String">
+	 select * from it_eborrowing where dcnumber=#{dcnumber}
+	 </select>
+	 
+	 <select id="getApplyConsumambBorrowInforMessageDetail" resultType="Hisign.entity.ConsumableBorrowInfor" parameterType="java.lang.String">
+	 select * from it_conborrow where dcnumber=#{dcnumber}
+	 </select>
+	 
+	 <select id="insert" resultType="java.lang.String" parameterType="java.lang.String">
+	 insert into process (dcnumber,name,audit_name,type,state,insert_time) values (#{dcnumber},#{name},#{audit_name},#{type},"待办",now());
+	 </select>
+	 
+	 <select id="updateState" resultType="java.lang.String" parameterType="java.lang.String">
+	 update process set state='已处理' where dcnumber=#{dcnumber}
+	 </select>
+	 
+	 <select id="updateManager" resultType="java.lang.String" parameterType="java.lang.String">
+	 update process set manager_id=#{manager_id},manager=#{manager} where dcnumber=#{dcnumber}
+	 </select>
+	 
+	 <select id="searchPointMsg" resultType="java.lang.Integer" parameterType="java.lang.String">
+	 select count(0) from process where state='待办' and name=#{name};
+	 </select>
+	 
+	 <select id="MyContractMsgPoint" resultType="java.lang.Integer" parameterType="java.lang.String">
+	 select count(0) from contract_success where borrowname=#{name} and link_rdate is NULL and link_evaluation is not NULL and audittype='是' and overdate is null;
+	 
+	 </select>
+	 
+	 <select id="ConfirmToreceiveCourierPointMsg" resultType="java.lang.Integer" parameterType="java.lang.String">
+	 select count(0) from office_courier where recipients=#{name} and lq is NOT null and overtime is null;
+	 </select>
+	 
+	 <select id="getMyCarPointMsg" resultType="java.lang.Integer" parameterType="java.lang.String">
+		select count(0) from office_applycar where name=#{name} and evaluation is null and audit_type ='是';
+	 </select>
+	 
+	 <select id ="getMyBusinessCardPointMsg" resultType="java.lang.Integer" parameterType="java.lang.String">
+	 select count(0) from office_businesscard  where name=#{name} and desk is not null and lq is not null and lq_time is not null and over_time is null
+	 </select>
+	 
+	 <select id="getCreateCardPointMsg" resultType="java.lang.Integer" parameterType="java.lang.String">
+	select count(0) from office_businesscard  where name=#{name} and desk is not null and lq is null and lq_time is null and over_time is null
+	 </select>
+	 
+	 <select id="getMyStampPonitMsg" resultType="java.lang.Integer" parameterType="java.lang.String">
+	 select count(0) from office_applystamp where name=#{name} and issue_type is not null and evaluation is null
+	 </select>
+	 
+	<select id="insert2" resultType="java.lang.String" parameterType="java.lang.String">
+	 insert into process (dcnumber,name_id ,name,audit_name_id,audit_name,type,state,insert_time) values (#{dcnumber},#{name_id},#{name},#{spid},#{audit_name},#{type},"待办",now());
+	 </select>
+	 
+	 
+	 <select id="getMyHrContractPointMsg" resultType="java.lang.Integer" parameterType="java.lang.String">
+	 select count(0) from hr_contract where userId=#{userid} and rdate is null and audittype='是' and evaluation is not null and overdate is null
+	 </select>
+	 
+	 <select id="getMyEBorrowPointMsg" resultType="java.lang.Integer" parameterType="java.lang.String">
+	 select count(0) from it_eborrowing where userId=#{userid} and abtime is null and has_get is not null and evaluate is null
+	 </select>
+	 
+</mapper>

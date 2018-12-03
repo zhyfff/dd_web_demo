@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="Hisign.dao.ITDao">
+	<select id="consu_insert" resultType="Hisign.entity.ConsumablePurInfor" parameterType="Hisign.entity.ConsumablePurInfor">
+	insert into it_conpur
+	(dcnumber,userId,borrowid,borrowname,borrowde,ptime,ptype,consumable_type,consumable_name,specifications,apply_num,note,audit_name,spid)
+	values(#{dcnumber},#{userId},#{borrowid},#{borrowname},#{borrowde},#{ptime},#{ptype},#{consumable_type},#{consumable_name},#{specifications},#{apply_num},#{note},#{audit_name},#{spid});
+	</select>
+	
+	<select id="consu_audit" resultType="Hisign.entity.ConsumablePurInfor" parameterType="Hisign.entity.ConsumablePurInfor">
+	update it_conpur set audit_type=#{audit_type},audit_opinion=#{audit_opinion},audit_time=#{audit_time} where dcnumber=#{dcnumber}
+	</select>
+	
+	<select id="addNewCon" resultType="Hisign.entity.ConsumableListInfor" parameterType="Hisign.entity.ConsumableListInfor">
+	insert into it_consumable_list
+	(ptime,ptype,recipients_number,consumable_type,consumable_name,specifications,consumable_num,consum_uprice,consum_tprice,note,available,type_num,add_date)
+	values (#{ptime},#{ptype},#{recipients_number},#{consumable_type},#{consumable_name},#{specifications},#{consumable_num},#{consum_uprice},#{consum_tprice},#{note},'可用',#{type_num},now())
+	</select>
+	
+	
+	<select id="getConsumableInfor" resultType="Hisign.entity.ConsumableListInfor" parameterType="java.lang.String">
+	select * from it_consumable_list where type_num=#{type_num}
+	</select>
+	
+	<select id="UpdateConsumableInfor" resultType="Hisign.entity.ConsumableListInfor" parameterType="Hisign.entity.ConsumableListInfor">
+	update it_consumable_list set consumable_num=#{consumable_num},consum_uprice=#{consum_uprice},consum_tprice=#{consum_tprice},available=#{available}
+	</select>
+	
+	<select id="EndApplyConsu" resultType="Hisign.entity.ConsumableListInfor" parameterType="java.lang.String">
+	update it_conpur set overdate=now() where dcnumber=#{dcnumber};
+	</select>
+	
+	<select id="searchConsumApply" resultType="Hisign.entity.ConsumablePurInfor" parameterType="java.lang.String">
+	select * from it_conpur where borrowname=#{searchkey} or ptime=#{searchkey} order by dcnumber desc
+	</select>
+	
+<!-- 	/***********************************************************************************************************/ -->
+
+	<select id="eborrow_insert" resultType="Hisign.entity.EquipBorrowInfor" parameterType="Hisign.entity.EquipBorrowInfor">
+	insert into it_eborrowing
+	(dcnumber,userId,borrowid,borrowname,borrowde,equipment,model,num,ptime,ebtime,audit_name,spid,abtime,note,applytime) 
+	values(#{dcnumber},#{userId},#{borrowid},#{borrowname},#{borrowde},#{equipment},#{model},#{num},#{ptime},#{ebtime},#{audit_name},#{spid},#{abtime},#{note},now());
+	</select>
+	
+	<select id="eborrow_audit" resultType="Hisign.entity.EquipBorrowInfor" parameterType="Hisign.entity.EquipBorrowInfor">
+	update it_eborrowing set audit_type=#{audit_type},has_get=#{has_get},return_type=#{return_type} where dcnumber=#{dcnumber}
+	</select>
+	
+	<select id="getMyEboroowInfor" resultType="Hisign.entity.EquipBorrowInfor" parameterType="java.lang.String">
+	select * from it_eborrowing where userId=#{userid} order by dcnumber desc
+	</select>
+	
+	<select id="eborrow_return" resultType="Hisign.entity.EquipBorrowInfor" parameterType="Hisign.entity.EquipBorrowInfor">
+	update it_eborrowing set abtime=now() where dcnumber=#{dcnumber} 
+	</select>
+	
+	<select id="eborrow_setEva" resultType="Hisign.entity.EquipBorrowInfor" parameterType="Hisign.entity.EquipBorrowInfor">
+	update it_eborrowing set evaluate=#{evaluate}, overdate=now() where dcnumber=#{dcnumber}
+	</select>
+	
+	<select id="searchEBorrowApply" resultType="Hisign.entity.EquipBorrowInfor" parameterType="java.lang.String">
+	select * from it_eborrowing where borrowname=#{searchkey} or ptime=#{searchkey} order by dcnumber desc
+	</select>
+	
+<!-- 	*********************************************************************************************** -->
+
+	<select id="Cborrow_insert" resultType="Hisign.entity.ConsumableBorrowInfor" parameterType="Hisign.entity.ConsumableBorrowInfor">
+	insert into it_conborrow
+	(dcnumber,userId,borrowid,borrowname,borrowde,Recipients_number,ptype,ptime,consumable_type,consumable_name,specifications,consumable_num,consum_uprice,consum_tprice,note,audit_name,spid)
+	values (#{dcnumber},#{userId},#{borrowid},#{borrowname},#{borrowde},#{Recipients_number},#{ptype},#{ptime},#{consumable_type},#{consumable_name},#{specifications},#{consumable_num},#{consum_uprice},#{consum_tprice},#{note},#{audit_name},#{spid});
+	</select>
+	
+	<select id="ConsuBorrowAudit" resultType="Hisign.entity.ConsumableBorrowInfor" parameterType="Hisign.entity.ConsumableBorrowInfor">
+	update it_conborrow set audit_type=#{audit_type},audit_opinion=#{audit_opinion},audit_time=#{audit_time},admins_id=#{admins_id},admins=#{admins} where dcnumber=#{dcnumber}
+	</select>
+	
+	<select id="ConsuBorrowIssu" resultType="Hisign.entity.ConsumableBorrowInfor" parameterType="Hisign.entity.ConsumableBorrowInfor">
+	update it_conborrow set issue_type=#{issue_type} where dcnumber=#{dcnumber}
+	</select>
+	
+	<select id="ConsuEva" resultType="Hisign.entity.ConsumableBorrowInfor" parameterType="Hisign.entity.ConsumableBorrowInfor">
+	update it_conborrow set evaluate=#{evaluate},overdate=now() where dcnumber=#{dcnumber}
+	</select>
+	
+	<select id="getgetConsumableNumList" resultType="Hisign.entity.ConsumableListInfor" parameterType="java.lang.String">
+	select consumable_num,consum_uprice,consum_tprice from it_consumable_list where Recipients_number=#{Recipients_number}
+	</select>
+	
+	<select id="ChangeConsumableNumAndP" resultType="Hisign.entity.ConsumableListInfor" parameterType="java.lang.String">
+	update it_consumable_list set consumable_num=#{l_cnum},consum_tprice=#{l_tup} where Recipients_number=#{recipients_number}
+	</select>
+
+</mapper>
