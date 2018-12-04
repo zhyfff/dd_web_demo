@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">启信宝附近的企业查询第二版</string>
+    <string name="but1">点击开始</string>
+    <string name="time">---</string>
+    <string name="page">---</string>
+    <string name="text">---</string>
+    <string name="but2">详细信息</string>
+    <string name="title_activity_moreinfor">企业详细信息</string>
+    <string name="seach">输入企业id</string>
+    <string name="sechbut">查询</string>
+
+</resources>
